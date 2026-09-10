@@ -74,6 +74,8 @@ export type RoadmapStep = {
   label: string;
   /** 0..1, from Postgres. Never from the model. */
   mastery: number;
+  /** Learner-facing summary of the observations supporting this rank. */
+  evidence_claim: string;
   status: RoadmapStatus;
 };
 
@@ -98,6 +100,8 @@ export type WeakTopic = {
   topic_id: string;
   label: string;
   mastery: number;
+  /** Learner-facing summary; numeric mastery is never displayed. */
+  evidence_claim: string;
 };
 
 export type ProgressPanel = {
@@ -129,10 +133,25 @@ export type AskRequest = {
   question: string;
 };
 
+export type InstructionalState =
+  | 'worked_transfer'
+  | 'guided_practice'
+  | 'focused_practice'
+  | 'timed_drill'
+  | 'prerequisite_reset';
+
+/** A first-class explanation of the fixture policy's instructional choice. */
+export type AdaptationSummary = {
+  state: InstructionalState;
+  topic_id: string;
+  reason: string;
+};
+
 export type AskResponse = {
   spec_id: string;
   /** Dev overlay only. Never shown to learners. */
   cached: boolean;
+  adaptation: AdaptationSummary;
   blocks: Block[];
 };
 

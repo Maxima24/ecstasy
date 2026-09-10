@@ -8,7 +8,8 @@ import type {
   QuizSubmitResponse,
   Roadmap,
 } from '../types';
-import { progressFor, recordAnswer, roadmapFor } from './session';
+import { policy } from '../adaptation';
+import { evidenceFor, progressFor, recordAnswer, roadmapFor } from './session';
 
 /** The seeded demo account. PRD §3.1: no auth flow, no login screen. */
 export const DEMO_USER = 'demo';
@@ -28,11 +29,13 @@ export const DEMO_USER = 'demo';
  * Questions are AQuA-RAT shaped; citations point at OpenStax sections.
  */
 
+/**
+ * Static blocks below feed the BROKEN failure fixtures only. The live screen is
+ * composed by the adaptation policy from session evidence — see `askFixture`.
+ */
 const ROADMAP_STEPS: Roadmap['steps'] = [
-  { topic_id: 'rates', label: 'Rates and speed', mastery: 0.31, status: 'next' },
-  { topic_id: 'ratios', label: 'Ratios', mastery: 0.72, status: 'done' },
-  { topic_id: 'percentages', label: 'Percentages', mastery: 0.44, status: 'later' },
-  { topic_id: 'work_time', label: 'Work and time', mastery: 0.38, status: 'later' },
+  { topic_id: 'linear_equations', label: 'Linear equations', mastery: 0.31, evidence_claim: '0 of last 2 correct', status: 'next' },
+  { topic_id: 'arithmetic', label: 'Arithmetic', mastery: 0.72, evidence_claim: '3 of last 3 correct', status: 'done' },
 ];
 
 const EXPLAINER: Block = {
@@ -54,12 +57,11 @@ const ROADMAP: Block = { type: 'roadmap', steps: ROADMAP_STEPS };
 const PROGRESS: Block = {
   type: 'progress_panel',
   weakest_topics: [
-    { topic_id: 'rates', label: 'Rates and speed', mastery: 0.31 },
-    { topic_id: 'work_time', label: 'Work and time', mastery: 0.38 },
-    { topic_id: 'percentages', label: 'Percentages', mastery: 0.44 },
+    { topic_id: 'linear_equations', label: 'Linear equations', mastery: 0.31, evidence_claim: '0 of last 2 correct' },
+    { topic_id: 'arithmetic', label: 'Arithmetic', mastery: 0.72, evidence_claim: '3 of last 3 correct' },
   ],
   streak: 4,
-  next_action_label: 'Fix rates next',
+  next_action_label: 'Practise linear equations next',
 };
 
 const AUDIO: Block = {
@@ -101,47 +103,26 @@ const FLASHCARDS: Block = {
 };
 
 /**
- * What the backend would return per profile, BEFORE invariants are applied.
+ * The next screen, chosen by the adaptation policy.
  *
- * Deliberately imperfect. `rusty` gets three blocks so the clamp has something
- * to do, and `strong` gets an explainer card so the filter is exercised. A
- * fixture that already satisfies the invariant tests nothing.
- */
-const SCREENS: Record<Profile, Block[]> = {
-  rusty: [EXPLAINER, ROADMAP, PROGRESS],
-  time_poor: [PROGRESS, ROADMAP, FLASHCARDS],
-  hands_free: [AUDIO, EXPLAINER, FLASHCARDS],
-  // ROADMAP is not optional here. `strong` is the only profile whose fixture
-  // carries a quiz, so it is the only screen where an answer can be given — and
-  // the roadmap must be visible on that screen or the reorder, which is the
-  // demo's centrepiece, happens somewhere nobody is looking. The drill still
-  // opens the screen, per the profile's contract.
-  strong: [EXPLAINER, QUIZ, ROADMAP, PROGRESS],
-};
-
-/**
- * Blocks for a profile, with the roadmap and progress panel filled from live
- * session state.
- *
- * The static ROADMAP and PROGRESS constants above are the shape; the session is
- * the truth. Substituting here is what makes a fresh ask reflect mastery the
- * learner has already changed, rather than replaying the seed values.
+ * This no longer reads a hardcoded per-profile screen. The policy decides the
+ * instructional state from observed behaviour, composes blocks for it, and
+ * returns the reason for the choice alongside them. The profile shapes ordering,
+ * modality and density around that decision — it is a delivery preference, not
+ * a pre-authored screen.
  */
 export function askFixture(
   profile: Profile,
   question: string,
   userId: string = DEMO_USER,
 ): AskResponse {
-  const blocks = (SCREENS[profile] ?? []).map((block) => {
-    if (block.type === 'roadmap') return roadmapFor(userId);
-    if (block.type === 'progress_panel') return progressFor(userId);
-    return block;
-  });
+  const plan = policy(evidenceFor(userId), profile);
 
   return {
-    spec_id: `fixture_${profile}_${question.length}`,
+    spec_id: `fixture_${profile}_${plan.state}_${question.length}`,
     cached: true,
-    blocks,
+    adaptation: { state: plan.state, topic_id: plan.topic_id, reason: plan.reason },
+    blocks: plan.blocks,
   };
 }
 
@@ -165,10 +146,11 @@ export function quizSubmitFixture(
   selectedIndex: number,
   topicId: string,
   userId: string = DEMO_USER,
+  elapsedMs = 0,
+  answerIndex = 2,
 ): QuizSubmitResponse {
-  const answerIndex = 2;
   const correct = selectedIndex === answerIndex;
-  const recorded = recordAnswer(userId, topicId, correct);
+  const recorded = recordAnswer(userId, topicId, correct, elapsedMs);
 
   return {
     correct,

@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 
 import { BlockRenderer } from '@/blocks/BlockRenderer';
-import { BROKEN, askFixture, roadmapFixture } from '@/lib/fixtures';
-import { previewAfterWrongAnswer } from '@/lib/fixtures/session';
+import { BROKEN, askFixture } from '@/lib/fixtures';
+import { policy } from '@/lib/adaptation';
+import { simulate } from '@/lib/fixtures/session';
 import { applyInvariants } from '@/lib/invariants';
 import { PROFILES, parseBlocks, type Block, type Profile } from '@/lib/types';
 
@@ -117,19 +118,51 @@ export default function DevPage() {
         />
       </Group>
 
-      <Group heading="Mastery, before and after">
-        <Panel
-          title="Roadmap at seed"
-          note="Rates weakest at 31%, so it holds `next`."
-          profile="time_poor"
-          blocks={[roadmapFixture()]}
-        />
-        <Panel
-          title="After a wrong answer on rates"
-          note="Rates drops to 26%. Ordering is derived from mastery, so `next` follows the weakest topic. In the app these rows travel to their new positions."
-          profile="time_poor"
-          blocks={[previewAfterWrongAnswer('rates')]}
-        />
+      <Group heading="Adaptation policy, by evidence">
+        {[
+          {
+            title: 'No history',
+            note: 'Seeded session, nothing answered yet.',
+            answers: [],
+          },
+          {
+            title: 'One wrong answer',
+            note: 'Expect a worked example before the next question.',
+            answers: [{ topicId: 'linear_equations', correct: false, elapsedMs: 12_000 }],
+          },
+          {
+            title: 'Correct but slow',
+            note: 'Expect guided practice, not a jump in difficulty.',
+            answers: [{ topicId: 'linear_equations', correct: true, elapsedMs: 22_000 }],
+          },
+          {
+            title: 'Two fast correct',
+            note: 'Expect a compressed timed drill.',
+            answers: [
+              { topicId: 'linear_equations', correct: true, elapsedMs: 4_000 },
+              { topicId: 'linear_equations', correct: true, elapsedMs: 3_000 },
+            ],
+          },
+          {
+            title: 'Two misses in a row',
+            note: 'Expect a step back to the prerequisite topic.',
+            answers: [
+              { topicId: 'linear_equations', correct: false, elapsedMs: 11_000 },
+              { topicId: 'linear_equations', correct: false, elapsedMs: 13_000 },
+            ],
+          },
+        ].map((scenario) => {
+          const plan = policy(simulate(scenario.answers), 'strong');
+          return (
+            <Panel
+              key={scenario.title}
+              title={scenario.title}
+              note={`${scenario.note} — policy chose ${plan.state}: "${plan.reason}"`}
+              profile="strong"
+              blocks={applyInvariants('strong', plan.blocks)}
+            />
+          );
+        })}
       </Group>
     </div>
   );

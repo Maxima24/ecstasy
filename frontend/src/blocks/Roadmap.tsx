@@ -86,7 +86,6 @@ export function Roadmap({ steps }: RoadmapBlock) {
     <BlockShell label="Roadmap">
       <div className="flex flex-col gap-gap">
         {steps.map((step) => {
-          const percentage = Math.round(step.mastery * 100);
           const rowTone =
             step.status === 'next'
               ? 'text-accent font-semibold'
@@ -109,21 +108,16 @@ export function Roadmap({ steps }: RoadmapBlock) {
                   <span className="sr-only">{step.status}. </span>
                   {step.label}
                 </span>
-                <span className="numeric shrink-0 text-cite font-regular">{percentage}%</span>
               </div>
-              <span
-                role="progressbar"
-                aria-label={`${step.label} mastery`}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={percentage}
-                className="h-s1 w-full overflow-hidden bg-sunk"
-              >
-                <span
-                  className={`block h-full ${step.status === 'next' ? 'bg-accent' : 'bg-done'}`}
-                  style={{ width: `${percentage}%` }}
-                />
-              </span>
+              {/*
+                An evidence claim, not a percentage.
+                A number like "31%" implies a measurement this product has not
+                earned; pseudo-precision reads as less intelligent, not more.
+                Everything shown here is something the session can actually
+                evidence. The numeric mastery still exists — it is what orders
+                these rows — but it is never claimed to the learner.
+              */}
+              <span className="text-cite leading-tight text-muted">{step.evidence_claim}</span>
             </div>
           );
         })}

@@ -797,6 +797,8 @@ Frontend cannot close these. Raise them now, not on Day 8.
 | `API_TOKEN` issued and shared out of band (never committed) | Backend | Proxy cannot authenticate |
 | Three demo profile keys pre-warmed and seeded; live generation disabled by flag | Backend | The flip runs live generation at 2500 ms and the demo's best moment becomes its worst |
 | `audio_url` ready-to-play by the time `/ask` responds | Backend | Frontend will not orchestrate a second TTS call in the render path |
+| **`AskResponse.adaptation`** — `{state, topic_id, reason}` on every `/ask` response | Backend | The reason string is what distinguishes adapting from appearing to adapt. Without it the UI has nothing to explain itself with |
+| **`evidence_claim`** on `RoadmapStep` and `WeakTopic` | Backend | The UI no longer shows mastery percentages. If the backend returns only a number, the learner sees nothing |
 | Product name settled — `Ectasy` (PRD) / `ecstasy` (repo) / `Ecstacy` (current) | Product | Ships with an inconsistent name |
 
 ---

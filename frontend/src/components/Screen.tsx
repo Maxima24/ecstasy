@@ -149,6 +149,23 @@ export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: 
           <div className={`transition-opacity ${opacityTransition}`}>
             <div className={`transition-transform ${transformTransition}`}>
               {/*
+                Why this screen looks the way it does.
+
+                Rendered above the generated region, visible without any
+                interaction. This is the difference between a system that
+                adapts and one that appears to: the learner is told what was
+                observed and what the product decided because of it. It is not
+                an error state and must never be styled as one.
+              */}
+              {data?.adaptation ? (
+                <p
+                  className="mb-block text-quiet leading-body text-muted"
+                  role="status"
+                >
+                  {data.adaptation.reason}
+                </p>
+              ) : null}
+              {/*
                 Keyed on question AND profile, for two reasons.
 
                 Question: BlockRenderer keys children by `${type}-${index}`, so
