@@ -1,26 +1,116 @@
 @import "tailwindcss";
+@import "../styles/tokens.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Tailwind v4 theme mapping.
+ *
+ * `@theme inline` makes each utility reference the custom property at the point
+ * of use rather than inlining its value at build time. That is what lets
+ * `bg-accent` resolve differently under each `data-profile` — the utility is
+ * one class, the value follows the container.
+ *
+ * Component authors use these utilities. They do not write `var(--accent)` by
+ * hand, and they do not write arbitrary values like `text-[15px]`.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colour ------------------------------------------------------------- */
+  --color-ground:     var(--ground);
+  --color-surface:    var(--surface);
+  --color-sunk:       var(--sunk);
+  --color-ink:        var(--ink);
+  --color-muted:      var(--muted);
+  --color-faint:      var(--faint);
+  --color-line:       var(--line);
+  --color-done:       var(--done);
+  --color-done-bg:    var(--done-bg);
+  --color-accent:     var(--accent);
+  --color-accent-bg:  var(--accent-bg);
+
+  /* Spacing ------------------------------------------------------------ */
+  --spacing-s1:    var(--s1);
+  --spacing-s2:    var(--s2);
+  --spacing-s3:    var(--s3);
+  --spacing-s4:    var(--s4);
+  --spacing-s5:    var(--s5);
+  --spacing-s6:    var(--s6);
+  --spacing-block: var(--block-gap);   /* gap-block  — between blocks, fixed  */
+  --spacing-gap:   var(--gap);         /* gap-gap    — within a block, varies */
+
+  /* Type --------------------------------------------------------------- */
+  --text-body:   var(--t-body);
+  --text-title:  var(--t-title);
+  --text-row:    var(--t-row);
+  --text-expr:   var(--t-expr);
+  --text-quiet:  var(--t-quiet);
+  --text-cite:   var(--t-cite);
+  --text-label:  var(--t-label);
+  --text-chrome: var(--t-chrome);
+
+  --font-weight-regular:  var(--w-regular);
+  --font-weight-medium:   var(--w-medium);
+  --font-weight-semibold: var(--w-semibold);
+
+  --leading-body:  var(--lh-body);
+  --leading-tight: var(--lh-tight);
+
+  --tracking-profile: var(--track);
+  --tracking-label:   var(--track-label);
+
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+
+  /* Shape and motion --------------------------------------------------- */
+  --radius-token: var(--radius);
+
+  --ease-expressive-in:  var(--curve-expressive-in);
+  --ease-expressive-out: var(--curve-expressive-out);
+  --ease-productive-in:  var(--curve-productive-in);
+  --ease-productive-out: var(--curve-productive-out);
+
+  --duration-flip-out:  var(--dur-flip-out);
+  --duration-flip-in:   var(--dur-flip-in);
+  --duration-reorder:   var(--dur-reorder);
+  --duration-feedback:  var(--dur-feedback);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/*
+ * Base.
+ *
+ * No prefers-color-scheme block. The product is light-only (PRD §1) and adding
+ * one would break the fixed token contract. This is deliberate — do not
+ * reinstate the dark block create-next-app shipped here.
+ */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Numerals.
+ *
+ * IBM Plex does not slash its zero by default; the feature must be requested.
+ * Apply to answer options, worked-solution steps, mastery values and timers —
+ * any numeric UI where 0/O confusion costs the learner something.
+ */
+.numeric {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "zero" 1;
+}
+
+/*
+ * Expressions never wrap mid-equation. They scroll inside their own container
+ * so the page body never scrolls sideways.
+ */
+.expr {
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* KaTeX output sits level with surrounding body text. */
+.katex {
+  font-size: 1em;
 }

@@ -28,6 +28,24 @@ it does not go in a component.** No literal hex, no one-off padding, no `16px`
 typed into a className. Need a value that isn't there? Add it to the token file
 first, in its own commit.
 
+We use **Tailwind v4**. The tokens are wired into the theme via `@theme inline`
+in `src/app/globals.css`, so use the utilities — not raw `var()`, and not
+arbitrary values like `text-[15px]`:
+
+| Use | Utility |
+|---|---|
+| Colour | `bg-ground` `bg-surface` `text-ink` `text-muted` `text-faint` `border-line` `text-accent` `border-accent` `bg-accent-bg` `text-done` |
+| Spacing | `p-s1`..`p-s6` `gap-gap` (within a block) `gap-block` (between blocks) |
+| Type | `text-body` `text-title` `text-row` `text-expr` `text-quiet` `text-cite` `text-label` `text-chrome` |
+| Weight | `font-regular` `font-medium` `font-semibold` |
+| Line height | `leading-body` `leading-tight` |
+| Tracking | `tracking-profile` `tracking-label` |
+| Font | `font-sans` `font-mono` |
+| Motion | `ease-expressive-in` `ease-productive-out` `duration-flip-in` `duration-reorder` |
+
+`bg-accent` resolves differently under each `data-profile` because the theme
+mapping is `inline` — one class, value follows the container.
+
 No component reads the profile — not a prop, not context, not a class name.
 Profile reaches components only through custom properties on the container.
 A component that branches on profile is a design error.
