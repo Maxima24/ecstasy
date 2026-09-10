@@ -19,13 +19,13 @@
  * prefers-color-scheme block here.
  * ------------------------------------------------------------------------- */
 [data-profile] {
-  --ground:  #F8F9F9;   /* page behind everything */
-  --surface: #FFFFFF;   /* chrome only — header and ask bar */
-  --sunk:    #EFF2F2;   /* bar tracks */
+  --ground:  #E7EDEF;   /* page behind everything — blocks sit ON this */
+  --surface: #FFFFFF;   /* raised blocks, header, ask bar */
+  --sunk:    #EDF1F3;   /* bar tracks, inside a raised surface */
   --ink:     #14181A;   /* body text, expressions */
   --muted:   #5A666B;   /* secondary text, mastery values */
   --faint:   #8A959A;   /* citations, step indices, labels */
-  --line:    #E3E7E9;   /* hairlines, inactive rail */
+  --line:    #E0E7E9;   /* hairlines, dividers, inactive accent edge */
 
   --done:    #2C7A5B;   /* mastered topics, correct answers */
   --done-bg: #E6F1EB;
@@ -41,21 +41,43 @@
   /* Separation BETWEEN blocks. Deliberately fixed — it does NOT compress with
    * the profile.
    *
-   * Why: the rail is per-block, but at `strong` density (--gap 8px) adjacent
-   * rails read as one continuous line and blocks visually concatenate. A reader
-   * then cannot tell where one block ends, or which block a control belongs to.
-   * Block separation must stay well clear of within-block spacing at every
-   * profile: 28px against a worst case of 16px.
+   * Blocks are now raised surfaces on a tinted ground, so their edges are
+   * unambiguous and this no longer has to do the work of separating them. It
+   * stays fixed anyway: at `strong` density (--gap 8px) a compressing gap would
+   * make four stacked cards read as one striped panel. */
+  --block-gap: 16px;
+
+  /* Raised surfaces.
    *
-   * Every block also carries its mono label. The label is not decoration — it
-   * is the second ownership cue, and it is required, not optional. */
-  --block-gap: 28px;
+   * Superseded the earlier rail-only direction: no cards, no shadows, no fills.
+   * That direction was defensible on space grounds — at 375px, card padding and
+   * borders are expensive — but executed at this scale it read as unfinished
+   * rather than restrained. Depth gives each block an unambiguous edge and gives
+   * the screen a focal plane.
+   *
+   * The accent survives as a 3px edge on the leading side of each block, so the
+   * profile signal is still carried by structure rather than by decoration. */
+  /* Named --block-radius / --block-shadow, not --radius-block / --shadow-block:
+     Tailwind v4 owns the --radius-* and --shadow-* namespaces, so a theme entry
+     mapping --radius-block to var(--radius-block) would reference itself and
+     silently resolve to nothing. Same trap the motion curves hit. */
+  --radius:       4px;   /* chip, play control — small controls */
+  --block-radius: 10px;  /* raised blocks */
 
-  /* Radius appears on exactly two things: the profile chip and the play
-     control. Nothing else is rounded, because nothing else is enclosed. */
-  --radius: 4px;
+  /* Two-layer shadow: a tight contact shadow to seat the block, a wider soft
+     one to lift it. Tinted toward the ink rather than pure black, so it reads
+     as shade rather than grime. */
+  --block-shadow:
+    0 1px 2px rgba(18, 26, 28, 0.05),
+    0 4px 14px rgba(18, 26, 28, 0.06);
 
-  --rail: 2px;
+  /* The accent edge. 4px so it maps to Tailwind's stock border-l-4 rather than
+     needing an arbitrary value. */
+  --rail: 4px;
+
+  /* Delay between consecutive blocks entering on a profile flip. Collapsed to
+     zero under reduced motion so the stagger disappears with the travel. */
+  --stagger: 60ms;
 
   /* Motion — IBM Carbon curves, matching the IBM Plex type system.
      Expressive is reserved for the profile flip. Everything a finger
@@ -176,5 +198,7 @@
     --dur-flip-in:  1ms;
     --dur-reorder:  1ms;
     --dur-feedback: 1ms;
+    /* No travel means no stagger to spread. Blocks arrive together. */
+    --stagger: 0ms;
   }
 }

@@ -35,13 +35,16 @@ freedom on.
 - **Structural devices must encode information.** Numbered markers only where
   the content is genuinely a sequence: worked-solution steps are (02 depends on
   01), roadmap rows are not — they are ranked, so they carry mastery values.
-- **Not everything is a card.** Border, fill, radius and shadow each say
-  "separate object". This design spends none of them: one rail, one hairline
-  between option rows.
-- **One radius, used twice.** The profile chip and the play control. Nothing
-  else is enclosed, so nothing else is rounded.
-- **Motion answers actions.** One orchestrated moment (the profile flip).
-  Entrance animations on every block are the generated default.
+- **A block is a raised surface; nothing else is.** Blocks get `rounded-block`,
+  `shadow-block` and an accent edge. Rows, options, steps and controls inside a
+  block get none of those — separation inside a block is a hairline or space.
+  Depth marks the one boundary that matters, and stops meaning anything if it
+  marks every boundary.
+- **Two radii, and they do not mix.** `rounded-block` for blocks,
+  `rounded-token` for small controls (the profile chip, the play control).
+- **Motion answers actions.** One orchestrated moment: the profile flip, where
+  blocks stagger in. Entrance animations on anything *else* — a card appearing
+  on scroll, a hover lift — are the generated default and are not wanted.
 
 Monospace *is* used for labels here, against the usual advice, because this
 product's voice is numeric — mastery values, timers, answer options and
@@ -77,10 +80,17 @@ No component reads the profile — not a prop, not context, not a class name.
 Profile reaches components only through custom properties on the container.
 A component that branches on profile is a design error.
 
-Structure: blocks hang off a single left rail. No cards, no shadows, no fills
-except where a value needs isolating. The accent is a highlight (rail, chip,
-`next` row, controls), never a background. Chrome stays at a fixed 13px
-regardless of profile — only the generated middle region resizes.
+Structure: each block is a raised white surface on a tinted ground, carrying the
+profile accent as an edge on its leading side. The accent is a highlight (that
+edge, the chip, the `next` roadmap row, controls), never a background fill.
+Chrome stays at a fixed 13px regardless of profile — only the generated middle
+region resizes.
+
+> This supersedes an earlier rail-only direction (no cards, no shadows, no
+> fills). It was defensible on space grounds, but at 375px it read as unfinished
+> rather than restrained. If you find prose anywhere in this repo still
+> describing the rail-only look, it is stale — fix it rather than reverting the
+> code to match it.
 
 ## The one rule that is easy to break
 

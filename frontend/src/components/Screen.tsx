@@ -149,14 +149,22 @@ export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: 
           <div className={`transition-opacity ${opacityTransition}`}>
             <div className={`transition-transform ${transformTransition}`}>
               {/*
-                Keyed on the question so a new one remounts the blocks.
-                BlockRenderer keys children by `${type}-${index}`, so without
-                this a second question reuses the same Quiz instance and its
-                `selected` state survives — the learner asks something fresh and
-                the quiz is already showing as answered. The key does not change
-                on a profile flip, so it costs nothing there.
+                Keyed on question AND profile, for two reasons.
+
+                Question: BlockRenderer keys children by `${type}-${index}`, so
+                without this a second question reuses the same Quiz instance and
+                its `selected` state survives — the learner asks something fresh
+                and the quiz is already showing as answered.
+
+                Profile: remounting is what replays the CSS entrance animation,
+                so the blocks stagger in on every flip rather than only on first
+                paint. A flip is a cache read, so this costs no network.
               */}
-              <BlockRenderer key={question} blocks={blocks} onQuizAnswered={handleAnswered} />
+              <BlockRenderer
+                key={`${question}::${profile}`}
+                blocks={blocks}
+                onQuizAnswered={handleAnswered}
+              />
             </div>
           </div>
         )}

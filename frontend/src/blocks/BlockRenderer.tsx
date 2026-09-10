@@ -1,5 +1,7 @@
 'use client';
 
+import type { CSSProperties } from 'react';
+
 import type { Block } from '@/lib/types';
 
 import { AudioExplainer } from './AudioExplainer';
@@ -74,13 +76,19 @@ export function BlockRenderer({
   return (
     <div className="flex flex-col gap-block min-h-80">
       {blocks.map((block, i) => (
-        <BlockBoundary
+        // `--block-index` drives the entrance stagger in globals.css, so blocks
+        // arrive in sequence and the screen visibly assembles rather than
+        // crossfading. The wrapper exists for the animation only — the block
+        // itself keeps its own boundary.
+        <div
           key={`${block.type}-${i}`}
-          label={block.type}
-          fallback={<FallbackCard />}
+          className="block-enter"
+          style={{ '--block-index': i } as CSSProperties}
         >
-          {renderBlock(block, onQuizAnswered)}
-        </BlockBoundary>
+          <BlockBoundary label={block.type} fallback={<FallbackCard />}>
+            {renderBlock(block, onQuizAnswered)}
+          </BlockBoundary>
+        </div>
       ))}
     </div>
   );

@@ -62,6 +62,8 @@
 
   /* Shape and motion --------------------------------------------------- */
   --radius-token: var(--radius);
+  --radius-block: var(--block-radius);
+  --shadow-block: var(--block-shadow);
 
   --ease-expressive-in:  var(--curve-expressive-in);
   --ease-expressive-out: var(--curve-expressive-out);
@@ -114,4 +116,37 @@ body {
 /* KaTeX output sits level with surrounding body text. */
 .katex {
   font-size: 1em;
+}
+
+/*
+ * Profile-flip choreography.
+ *
+ * The flip is the demo's headline moment, and a plain crossfade does not read
+ * as a rebuild. Blocks arrive in sequence instead of together, so the screen
+ * visibly assembles itself.
+ *
+ * `--block-index` is set inline per block by BlockRenderer. `backwards` fill
+ * holds each block at its start frame during its delay — without it every block
+ * would flash in at full opacity before its animation began.
+ *
+ * The whole sequence still fits the sub-400ms budget: the last of four blocks
+ * starts at 180ms and finishes at 180 + --dur-flip-in.
+ *
+ * Under reduced motion, --stagger is 0 and --dur-flip-in is 1ms, so this
+ * collapses to an instant swap with no travel.
+ */
+@keyframes block-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.block-enter {
+  animation: block-enter var(--dur-flip-in) var(--curve-expressive-in) backwards;
+  animation-delay: calc(var(--block-index, 0) * var(--stagger));
 }
