@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode } from 'react';
 
 import { ProfilePill } from './ProfilePill';
@@ -20,12 +22,60 @@ export function Header({ streak }: { streak: number }) {
   );
 }
 
-export function AskBar({ question }: { question: string }) {
+/**
+ * The ask input.
+ *
+ * Any question is accepted and, with no backend configured, returns the same
+ * fixture blocks. That is a known limitation and deliberately not worked around:
+ * the input is real, so the day a backend appears no UI code changes.
+ *
+ * Empty and whitespace-only submissions are ignored rather than producing a
+ * failure state — there is nothing to tell the learner they did wrong.
+ */
+export function AskBar({
+  question,
+  onAsk,
+  busy = false,
+}: {
+  question: string;
+  onAsk: (question: string) => void;
+  busy?: boolean;
+}) {
   return (
-    <div className="flex items-center gap-s2 px-s3 py-s2 bg-surface border-t border-line">
-      <span className="text-chrome text-faint leading-tight truncate">{question}</span>
-      <span className="text-chrome font-semibold text-accent leading-tight ml-auto">Ask</span>
-    </div>
+    <form
+      className="flex items-center gap-s2 px-s3 py-s2 bg-surface border-t border-line"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const input = event.currentTarget.elements.namedItem('question');
+        if (!(input instanceof HTMLInputElement)) return;
+        const value = input.value.trim();
+        if (!value) return;
+        onAsk(value);
+        input.blur();
+      }}
+    >
+      <label htmlFor="question" className="sr-only">
+        Ask a quantitative question
+      </label>
+      <input
+        id="question"
+        name="question"
+        type="text"
+        defaultValue={question}
+        key={question}
+        autoComplete="off"
+        enterKeyHint="send"
+        placeholder="Ask a question"
+        className="min-w-0 flex-1 bg-surface text-chrome leading-tight text-ink placeholder:text-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      />
+      <button
+        type="submit"
+        disabled={busy}
+        className="shrink-0 text-chrome font-semibold leading-tight text-accent disabled:text-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        {busy ? 'Asking' : 'Ask'}
+      </button>
+    </form>
   );
 }
 

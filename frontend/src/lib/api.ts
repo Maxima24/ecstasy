@@ -1,5 +1,6 @@
 import type {
   AskResponse,
+  ProgressPanel,
   Profile,
   QuizSubmitResponse,
   Roadmap,
@@ -81,6 +82,10 @@ export function submitAnswer(args: {
 
 export function fetchRoadmap(): Promise<Roadmap> {
   return request<Roadmap>(`/api/roadmap?user_id=${DEMO_USER_ID}`);
+}
+
+export function fetchProgress(): Promise<ProgressPanel> {
+  return request<ProgressPanel>(`/api/progress?user_id=${DEMO_USER_ID}`);
 }
 
 /**

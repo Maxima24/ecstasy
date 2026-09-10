@@ -22,7 +22,12 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   if (usingFixtures) {
-    return fixtureResponse(quizSubmitFixture(body.selected_index, body.topic_id));
+    // The fixture mutates session mastery, so this is the one fixture call with
+    // a side effect. It stays a fixture: the handler decides nothing, it only
+    // forwards the recorded result.
+    return fixtureResponse(
+      quizSubmitFixture(body.selected_index, body.topic_id, body.user_id),
+    );
   }
 
   return proxy('POST', '/quiz/submit', { body });

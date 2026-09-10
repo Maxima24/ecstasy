@@ -43,7 +43,9 @@ export function AudioExplainer({
     if (!hasUrl) return;
 
     const timer = setTimeout(() => {
-      const el = document.getElementById('audio-explainer') as HTMLAudioElement | null;
+      // Use the ref, not a document lookup: a hardcoded element id collides if
+      // two audio blocks render, which the hands_free invariant makes possible.
+      const el = audioRef.current;
       // readyState 0 means nothing loaded: treat as unavailable.
       if (!el || el.readyState === 0) setTimedOut(true);
     }, AUDIO_TIMEOUT_MS);
@@ -75,7 +77,6 @@ export function AudioExplainer({
         <div className="flex items-center gap-s3">
           <audio
             ref={audioRef}
-            id="audio-explainer"
             src={audio_url}
             preload="metadata"
             onPlay={() => setIsPlaying(true)}

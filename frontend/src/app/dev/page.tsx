@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 
 import { BlockRenderer } from '@/blocks/BlockRenderer';
-import { BROKEN, askFixture } from '@/lib/fixtures';
+import { BROKEN, askFixture, roadmapFixture } from '@/lib/fixtures';
+import { previewAfterWrongAnswer } from '@/lib/fixtures/session';
 import { applyInvariants } from '@/lib/invariants';
 import { PROFILES, parseBlocks, type Block, type Profile } from '@/lib/types';
 
@@ -113,6 +114,21 @@ export default function DevPage() {
           note="Explainer card removed entirely. Drill only."
           profile="strong"
           blocks={applyInvariants('strong', askFixture('strong', QUESTION).blocks)}
+        />
+      </Group>
+
+      <Group heading="Mastery, before and after">
+        <Panel
+          title="Roadmap at seed"
+          note="Rates weakest at 31%, so it holds `next`."
+          profile="time_poor"
+          blocks={[roadmapFixture()]}
+        />
+        <Panel
+          title="After a wrong answer on rates"
+          note="Rates drops to 26%. Ordering is derived from mastery, so `next` follows the weakest topic. In the app these rows travel to their new positions."
+          profile="time_poor"
+          blocks={[previewAfterWrongAnswer('rates')]}
         />
       </Group>
     </div>

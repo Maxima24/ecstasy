@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { BlockRenderer } from '@/blocks/BlockRenderer';
 import { BlockShell } from '@/blocks/BlockShell';
@@ -12,12 +12,23 @@ import {
   askQueryOptions,
   invalidateAfterAnswer,
   prefetchAllProfiles,
+  progressQueryOptions,
+  roadmapQueryOptions,
 } from '@/lib/query/keys';
+import type { Block, ProgressPanel, Roadmap } from '@/lib/types';
 
 import { AskBar, Frame, Header } from './chrome/Chrome';
 import { ScreenSkeleton } from './ScreenSkeleton';
 
 const DEMO_QUESTION = 'If 3x + 5 = 20, what is x?';
+
+/** Pull a block of a given type out of an ask response, to seed a live query. */
+function blockOfType<T extends Block['type']>(
+  blocks: Block[] | undefined,
+  type: T,
+): Extract<Block, { type: T }> | undefined {
+  return blocks?.find((b): b is Extract<Block, { type: T }> => b.type === type);
+}
 
 /**
  * The one screen. Its contents change.
@@ -25,29 +36,48 @@ const DEMO_QUESTION = 'If 3x + 5 = 20, what is x?';
  * Chrome is fixed and hand-built; only the middle region is generated. The
  * profile flip is the single orchestrated moment — content fades out over
  * --dur-flip-out, then the incoming blocks rise 8px into place over
- * --dur-flip-in. Nothing else animates.
+ * --dur-flip-in. Nothing else animates except the roadmap reorder.
  */
-export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
+export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: string }) {
   const { profile, phase } = useProfile();
   const queryClient = useQueryClient();
-  const warmed = useRef(false);
+  const [question, setQuestion] = useState(initialQuestion);
 
-  const { data, isPending, isError, error, refetch } = useQuery(
+  const { data, isPending, isFetching, isError, error, refetch } = useQuery(
     askQueryOptions(question, profile),
   );
 
   /*
-   * Warm the other three profiles once the first answer lands.
+   * Roadmap and progress are live, seeded from the ask response.
+   *
+   * They cannot be read from `data.blocks` directly: the ask key uses
+   * staleTime Infinity, so its roadmap block is frozen at the moment it was
+   * fetched and would never show mastery the learner has since changed. Seeding
+   * via initialData means no second load flash on first paint.
+   */
+  const { data: roadmap } = useQuery(
+    roadmapQueryOptions(blockOfType(data?.blocks, 'roadmap')),
+  );
+  const { data: progress } = useQuery(
+    progressQueryOptions(blockOfType(data?.blocks, 'progress_panel')),
+  );
+
+  /*
+   * Warm the other three profiles once an answer lands.
    *
    * This is what makes the proxy affordable: the extra hop is paid here, on
    * initial load where the budget is 2500 ms, instead of on the flip where it
    * is 150 ms. After this resolves every flip is a cache read.
    *
+   * Keyed on the question, so asking something new warms the other profiles for
+   * that question too rather than firing once for the life of the session.
+   *
    * Not setState, so no cascading render — this only fills the query cache.
    */
+  const warmedFor = useRef<string | null>(null);
   useEffect(() => {
-    if (!data || warmed.current) return;
-    warmed.current = true;
+    if (!data || warmedFor.current === question) return;
+    warmedFor.current = question;
     prefetchAllProfiles(queryClient, question, profile);
   }, [data, queryClient, question, profile]);
 
@@ -60,7 +90,8 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
     try {
       const result = await submitAnswer(answer);
       // Only when the flag says so. An unconditional invalidate would make the
-      // reorder moment meaningless.
+      // reorder moment meaningless — and now that something is subscribed to
+      // these keys, this actually refetches and re-renders.
       invalidateAfterAnswer(queryClient, result.roadmap_changed);
     } catch {
       // The learner already saw their result — grading was local. Failing to
@@ -70,7 +101,20 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
 
   // Invariants run after parsing, before render. The model chooses within the
   // constraint; this guarantees the shape.
-  const blocks = data ? applyInvariants(profile, data.blocks) : [];
+  const clamped = data ? applyInvariants(profile, data.blocks) : [];
+
+  /*
+   * Substitute the live roadmap and progress into the clamped blocks.
+   *
+   * Done here rather than inside the components so blocks stay presentational
+   * and never learn about queries (R9's sibling concern: data belongs in the
+   * screen).
+   */
+  const blocks: Block[] = clamped.map((block) => {
+    if (block.type === 'roadmap' && roadmap) return roadmap as Roadmap;
+    if (block.type === 'progress_panel' && progress) return progress as ProgressPanel;
+    return block;
+  });
 
   const opacityTransition =
     phase === 'out'
@@ -83,7 +127,7 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
 
   return (
     <Frame>
-      <Header streak={4} />
+      <Header streak={progress?.streak ?? 0} />
 
       <main className="flex-1 px-s3 py-s4">
         {isPending ? (
@@ -104,13 +148,21 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
         ) : (
           <div className={`transition-opacity ${opacityTransition}`}>
             <div className={`transition-transform ${transformTransition}`}>
-              <BlockRenderer blocks={blocks} onQuizAnswered={handleAnswered} />
+              {/*
+                Keyed on the question so a new one remounts the blocks.
+                BlockRenderer keys children by `${type}-${index}`, so without
+                this a second question reuses the same Quiz instance and its
+                `selected` state survives — the learner asks something fresh and
+                the quiz is already showing as answered. The key does not change
+                on a profile flip, so it costs nothing there.
+              */}
+              <BlockRenderer key={question} blocks={blocks} onQuizAnswered={handleAnswered} />
             </div>
           </div>
         )}
       </main>
 
-      <AskBar question={question} />
+      <AskBar question={question} onAsk={setQuestion} busy={isFetching} />
     </Frame>
   );
 }

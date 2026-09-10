@@ -22,7 +22,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   if (usingFixtures) {
-    return fixtureResponse(askFixture(body.profile, body.question));
+    return fixtureResponse(askFixture(body.profile, body.question, body.user_id));
   }
 
   return proxy('POST', '/ask', { body });

@@ -1,7 +1,12 @@
 import type { QueryClient } from '@tanstack/react-query';
 
-import { ask, DEMO_USER_ID } from '../api';
-import { PROFILES, type Profile } from '../types';
+import { ask, DEMO_USER_ID, fetchProgress, fetchRoadmap } from '../api';
+import {
+  PROFILES,
+  type ProgressPanel,
+  type Profile,
+  type Roadmap,
+} from '../types';
 
 /**
  * Query keys and cache policy.
@@ -33,6 +38,36 @@ export function askQueryOptions(question: string, profile: Profile) {
     queryKey: keys.ask(question, profile),
     queryFn: () => ask(question, profile),
     staleTime: ASK_STALE_TIME,
+  };
+}
+
+/**
+ * Roadmap and progress are live subscriptions, unlike the ask response.
+ *
+ * They must be, because `staleTime: Infinity` on the ask key means the roadmap
+ * block baked into a cached ask payload is frozen at the moment it was fetched.
+ * Answering a question changes mastery; only a separately-keyed query can see
+ * that. Seed them with `initialData` from the ask blocks so there is no second
+ * load flash on first paint.
+ *
+ * `staleTime: 0` is deliberate: these are exactly the queries
+ * `invalidateAfterAnswer` targets, and they should refetch the moment it fires.
+ */
+export function roadmapQueryOptions(initialData?: Roadmap) {
+  return {
+    queryKey: keys.roadmap(),
+    queryFn: fetchRoadmap,
+    staleTime: 0,
+    initialData,
+  };
+}
+
+export function progressQueryOptions(initialData?: ProgressPanel) {
+  return {
+    queryKey: keys.progress(),
+    queryFn: fetchProgress,
+    staleTime: 0,
+    initialData,
   };
 }
 

@@ -3,10 +3,15 @@ import 'server-only';
 import type {
   AskResponse,
   Block,
+  ProgressPanel,
   Profile,
   QuizSubmitResponse,
   Roadmap,
 } from '../types';
+import { progressFor, recordAnswer, roadmapFor } from './session';
+
+/** The seeded demo account. PRD §3.1: no auth flow, no login screen. */
+export const DEMO_USER = 'demo';
 
 /**
  * Stand-in backend responses for building against with no backend running.
@@ -106,44 +111,74 @@ const SCREENS: Record<Profile, Block[]> = {
   rusty: [EXPLAINER, ROADMAP, PROGRESS],
   time_poor: [PROGRESS, ROADMAP, FLASHCARDS],
   hands_free: [AUDIO, EXPLAINER, FLASHCARDS],
-  strong: [EXPLAINER, QUIZ, PROGRESS],
+  // ROADMAP is not optional here. `strong` is the only profile whose fixture
+  // carries a quiz, so it is the only screen where an answer can be given — and
+  // the roadmap must be visible on that screen or the reorder, which is the
+  // demo's centrepiece, happens somewhere nobody is looking. The drill still
+  // opens the screen, per the profile's contract.
+  strong: [EXPLAINER, QUIZ, ROADMAP, PROGRESS],
 };
 
-export function askFixture(profile: Profile, question: string): AskResponse {
+/**
+ * Blocks for a profile, with the roadmap and progress panel filled from live
+ * session state.
+ *
+ * The static ROADMAP and PROGRESS constants above are the shape; the session is
+ * the truth. Substituting here is what makes a fresh ask reflect mastery the
+ * learner has already changed, rather than replaying the seed values.
+ */
+export function askFixture(
+  profile: Profile,
+  question: string,
+  userId: string = DEMO_USER,
+): AskResponse {
+  const blocks = (SCREENS[profile] ?? []).map((block) => {
+    if (block.type === 'roadmap') return roadmapFor(userId);
+    if (block.type === 'progress_panel') return progressFor(userId);
+    return block;
+  });
+
   return {
     spec_id: `fixture_${profile}_${question.length}`,
     cached: true,
-    blocks: SCREENS[profile] ?? [],
+    blocks,
   };
 }
 
-export function roadmapFixture(): Roadmap {
-  return { type: 'roadmap', steps: ROADMAP_STEPS };
+export function roadmapFixture(userId: string = DEMO_USER): Roadmap {
+  return roadmapFor(userId);
+}
+
+export function progressFixture(userId: string = DEMO_USER): ProgressPanel {
+  return progressFor(userId);
 }
 
 /**
  * Grading a submission.
  *
- * `roadmap_changed` is true only when the answer is wrong, so the reorder
- * animation fires on a real state change rather than on every answer — which
- * is the behaviour the flag exists to enable.
+ * Mastery genuinely moves, in both directions, and `roadmap_changed` reports
+ * whether the ordering the learner can see actually changed — not whether the
+ * answer was wrong. A judge who answers correctly must still see the roadmap
+ * reorder, because that is the demo's centrepiece beat.
  */
 export function quizSubmitFixture(
   selectedIndex: number,
   topicId: string,
+  userId: string = DEMO_USER,
 ): QuizSubmitResponse {
   const answerIndex = 2;
   const correct = selectedIndex === answerIndex;
+  const recorded = recordAnswer(userId, topicId, correct);
 
   return {
     correct,
     answer_index: answerIndex,
     mastery: {
       topic_id: topicId,
-      before: 0.31,
-      after: correct ? 0.36 : 0.26,
+      before: recorded.before,
+      after: recorded.after,
     },
-    roadmap_changed: !correct,
+    roadmap_changed: recorded.roadmapChanged,
   };
 }
 

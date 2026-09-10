@@ -9,7 +9,7 @@ export async function GET(request: Request): Promise<Response> {
   const userId = new URL(request.url).searchParams.get('user_id') ?? 'demo';
 
   if (usingFixtures) {
-    return fixtureResponse(roadmapFixture());
+    return fixtureResponse(roadmapFixture(userId));
   }
 
   return proxy('GET', `/roadmap?user_id=${encodeURIComponent(userId)}`);
