@@ -13,7 +13,9 @@ import type { ReactNode } from 'react';
  * mastery values, timers, answer options and expressions are all mono, and the
  * label belongs to that register rather than being decoration.
  *
- * `muted` drops the accent for blocks that are not the focus of the screen.
+ * `muted` drops the accent from the rail for blocks that are not the focus of
+ * the screen. Labels stay quiet either way: accent belongs to the structural
+ * rail, not to eyebrow copy.
  */
 export function BlockShell({
   label,
@@ -30,9 +32,7 @@ export function BlockShell({
         muted ? 'border-line' : 'border-accent'
       }`}
     >
-      <span
-        className={`font-mono text-label leading-tight ${muted ? 'text-faint' : 'text-accent'}`}
-      >
+      <span className="font-mono text-label leading-tight text-faint">
         {label}
       </span>
       {children}

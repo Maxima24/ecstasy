@@ -38,15 +38,17 @@ export function ProfilePill() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="font-mono text-chrome rounded-token bg-accent-bg text-accent px-s2 py-s1 leading-tight"
+        aria-controls="profile-options"
+        className="rounded-token bg-accent-bg px-s2 py-s1 font-mono text-chrome leading-tight text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         {LABELS[profile]}
       </button>
 
       {open ? (
         <ul
+          id="profile-options"
           role="listbox"
-          className="absolute left-0 top-full mt-s1 z-10 bg-surface border border-line rounded-token overflow-hidden min-w-36"
+          className="absolute left-0 top-full z-10 mt-s1 w-max overflow-hidden border border-line bg-surface"
         >
           {PROFILES.map((p) => (
             <li key={p}>
@@ -55,7 +57,7 @@ export function ProfilePill() {
                 role="option"
                 aria-selected={p === profile}
                 onClick={() => choose(p)}
-                className={`w-full text-left font-mono text-chrome px-s3 py-s2 leading-tight ${
+                className={`w-full px-s3 py-s2 text-left font-mono text-chrome leading-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
                   p === profile ? 'text-accent' : 'text-ink'
                 }`}
               >

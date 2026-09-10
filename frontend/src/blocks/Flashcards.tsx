@@ -9,8 +9,8 @@ import { BlockShell } from './BlockShell';
 /**
  * Tap to reveal, then advance.
  *
- * TODO(codex): visual composition and the reveal interaction. Any motion here
- * uses duration-feedback — the profile flip is the only orchestrated moment.
+ * The whole bare surface is the reveal target. Any motion here uses
+ * duration-feedback — the profile flip is the only orchestrated moment.
  */
 export function Flashcards({ cards }: FlashcardsBlock) {
   const [index, setIndex] = useState(0);
@@ -33,13 +33,22 @@ export function Flashcards({ cards }: FlashcardsBlock) {
       <button
         type="button"
         onClick={advance}
-        className="text-left flex flex-col gap-s1 max-w-(--measure)"
+        aria-label={revealed ? 'Show next flashcard' : 'Reveal flashcard answer'}
+        className="flex w-full flex-col gap-s2 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <span className="text-body leading-body text-ink">
+        <span className="font-mono text-cite leading-tight text-faint">
+          {revealed ? 'Answer' : card.topic_id}
+        </span>
+        <span className="text-body font-medium leading-body text-ink" aria-live="polite">
           {revealed ? card.back : card.front}
         </span>
-        <span className="text-quiet text-muted">
-          {revealed ? 'Tap for next' : 'Tap to reveal'}, {index + 1} of {cards.length}
+        <span className="flex items-baseline justify-between gap-s2 text-quiet leading-tight">
+          <span className="font-medium text-accent">
+            {revealed ? 'Next card' : 'Reveal answer'}
+          </span>
+          <span className="numeric text-faint">
+            {index + 1} of {cards.length}
+          </span>
         </span>
       </button>
     </BlockShell>

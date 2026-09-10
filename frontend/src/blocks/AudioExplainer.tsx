@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { AudioExplainer as AudioExplainerBlock } from '@/lib/types';
 
@@ -20,8 +20,8 @@ const AUDIO_TIMEOUT_MS = 3_000;
  * fact already in hand. Only the timeout — a genuinely external event — moves
  * state.
  *
- * TODO(codex): visual composition of the player and transcript. The timeout
- * behaviour is logic — leave it in place.
+ * The player uses the one permitted rounded play control and a square-ended
+ * progress track. The timeout behaviour is logic — leave it in place.
  */
 export function AudioExplainer({
   script,
@@ -31,6 +31,9 @@ export function AudioExplainer({
 }: AudioExplainerBlock) {
   const [timedOut, setTimedOut] = useState(false);
   const [expanded, setExpanded] = useState(transcript_shown);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const hasUrl = Boolean(audio_url);
   const unavailable = !hasUrl || timedOut;
@@ -50,36 +53,84 @@ export function AudioExplainer({
 
   const seconds = Math.round(duration_ms / 1000);
   const label = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+  const elapsedLabel = `${Math.floor(elapsedSeconds / 60)}:${String(elapsedSeconds % 60).padStart(2, '0')}`;
+  const progress = seconds > 0 ? Math.min(100, Math.round((elapsedSeconds / seconds) * 100)) : 0;
+
+  function togglePlayback() {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      void audio.play().catch(() => {
+        // The existing timeout owns the unavailable state.
+      });
+    } else {
+      audio.pause();
+    }
+  }
 
   return (
     <BlockShell label="Audio">
       {hasUrl && !timedOut ? (
-        <audio
-          id="audio-explainer"
-          src={audio_url}
-          preload="metadata"
-          controls
-          className="w-full"
-        >
-          <track kind="captions" />
-        </audio>
+        <div className="flex items-center gap-s3">
+          <audio
+            ref={audioRef}
+            id="audio-explainer"
+            src={audio_url}
+            preload="metadata"
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => setIsPlaying(false)}
+            onTimeUpdate={(event) => setElapsedSeconds(Math.floor(event.currentTarget.currentTime))}
+            className="sr-only"
+          >
+            <track kind="captions" />
+          </audio>
+          <button
+            type="button"
+            onClick={togglePlayback}
+            aria-label={isPlaying ? 'Pause audio explanation' : 'Play audio explanation'}
+            className="shrink-0 rounded-token border border-accent px-s3 py-s2 font-mono text-row font-medium leading-tight text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+          <div className="flex min-w-0 flex-1 flex-col gap-s1">
+            <div className="flex items-baseline justify-between gap-s2 text-cite leading-tight">
+              <span className="text-muted">Audio explanation</span>
+              <span className="numeric shrink-0 text-faint">
+                {elapsedLabel} / {label}
+              </span>
+            </div>
+            <span
+              role="progressbar"
+              aria-label="Audio progress"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={progress}
+              className="h-s1 w-full overflow-hidden bg-sunk"
+            >
+              <span className="block h-full bg-accent" style={{ width: `${progress}%` }} />
+            </span>
+          </div>
+        </div>
       ) : null}
 
       {unavailable ? (
-        <span className="text-quiet text-muted">
+        <p className="text-quiet leading-body text-muted">
           Audio is unavailable. The transcript is below.
-        </span>
-      ) : (
-        <span className="numeric text-cite text-faint">{label}</span>
-      )}
+        </p>
+      ) : null}
 
       {showTranscript ? (
-        <p className="text-body leading-body text-ink max-w-(--measure)">{script}</p>
+        <div className="flex flex-col gap-s2">
+          <span className="font-mono text-cite leading-tight text-faint">Transcript</span>
+          <p className="text-body leading-body text-ink">{script}</p>
+        </div>
       ) : (
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="text-quiet text-muted text-left"
+          className="self-start text-left text-quiet font-medium text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           Show transcript
         </button>

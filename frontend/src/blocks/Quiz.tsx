@@ -25,9 +25,8 @@ export type QuizAnswer = {
  * the value change on any incidental re-render, which would corrupt the
  * elapsed-time measurement the backend uses for mastery scoring.
  *
- * TODO(codex): visual composition. Option treatment, correct and incorrect
- * states, timer presentation, rationale reveal. The grading logic is logic —
- * leave it in place.
+ * Correct and chosen-wrong states are written as well as coloured. The grading
+ * logic is logic — leave it in place.
  */
 export function Quiz({
   questions,
@@ -64,30 +63,43 @@ export function Quiz({
   return (
     <BlockShell label="Drill">
       <div className="flex items-baseline justify-between gap-s2">
-        <span className="font-mono text-cite text-faint">{question.topic_id}</span>
+        <span className="font-mono text-cite leading-tight text-faint">{question.topic_id}</span>
         {timer_seconds !== null ? (
-          <span className="numeric text-cite font-semibold text-accent">
+          <span
+            className="numeric text-cite font-semibold leading-tight text-ink"
+            aria-label={`${timer_seconds} seconds allowed`}
+          >
             {Math.floor(timer_seconds / 60)}:{String(timer_seconds % 60).padStart(2, '0')}
           </span>
         ) : null}
       </div>
 
-      <p className="text-body leading-body text-ink max-w-(--measure)">{question.stem}</p>
+      <p className="text-body font-medium leading-body text-ink">{question.stem}</p>
       {question.stem_expr ? (
-        <span className="numeric expr text-expr text-ink">{question.stem_expr}</span>
+        <span className="numeric expr py-s1 text-expr font-medium leading-tight text-ink">
+          {question.stem_expr}
+        </span>
       ) : null}
 
       <div className="flex flex-col">
         {question.options.map((option, i) => {
           const isAnswer = i === question.answer_index;
           const isChosen = i === selected;
-          const tone = !answered
+          const optionTone = !answered
             ? 'text-ink'
+            : isAnswer
+              ? 'text-done font-semibold'
+              : isChosen
+                ? 'text-accent'
+                : 'text-muted';
+          const markerTone = !answered
+            ? 'text-faint'
             : isAnswer
               ? 'text-done'
               : isChosen
-                ? 'text-accent line-through'
-                : 'text-muted';
+                ? 'text-accent'
+                : 'text-faint';
+          const feedback = answered ? (isAnswer ? 'Correct' : isChosen ? 'Your answer' : null) : null;
 
           return (
             <button
@@ -95,17 +107,30 @@ export function Quiz({
               type="button"
               disabled={answered}
               onClick={() => choose(i)}
-              className={`numeric text-row text-left grid grid-cols-[18px_1fr] gap-s2 py-s2 border-b border-line last:border-b-0 transition-colors duration-feedback ease-productive-out ${tone}`}
+              aria-label={`${String.fromCharCode(65 + i)}. ${option}${feedback ? `. ${feedback}` : ''}`}
+              className={`numeric flex w-full items-baseline gap-s2 border-b border-line py-s2 text-left text-row leading-tight transition-colors duration-feedback ease-productive-out last:border-b-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-100 ${optionTone}`}
             >
-              <span className="text-faint">{String.fromCharCode(65 + i)}</span>
-              <span>{option}</span>
+              <span className={`w-s5 shrink-0 ${markerTone}`} aria-hidden="true">
+                {String.fromCharCode(65 + i)}
+              </span>
+              <span className={`min-w-0 flex-1 ${isChosen && !isAnswer ? 'line-through' : ''}`}>
+                {option}
+              </span>
+              {feedback ? (
+                <span className="shrink-0 text-cite font-medium no-underline">{feedback}</span>
+              ) : null}
             </button>
           );
         })}
       </div>
 
       {answered ? (
-        <p className="text-quiet text-muted max-w-(--measure)">{question.rationale}</p>
+        <div className="flex items-start gap-s2" role="status">
+          <span className="font-mono text-cite leading-tight text-faint">Why</span>
+          <p className="min-w-0 flex-1 text-quiet leading-body text-muted">
+            {question.rationale}
+          </p>
+        </div>
       ) : null}
     </BlockShell>
   );

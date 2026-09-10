@@ -9,31 +9,47 @@ import { BlockShell } from './BlockShell';
  * indices. Reordering after a graded answer is a FLIP animation at
  * duration-reorder — see the motion spec.
  *
- * TODO(codex): visual composition. Bar treatment, how `done` and `later`
- * differentiate, the reorder animation.
+ * The type weight and mastery value carry meaning alongside colour, so the
+ * active row remains identifiable without relying on hue alone.
  */
 export function Roadmap({ steps }: RoadmapBlock) {
   return (
     <BlockShell label="Roadmap">
-      <div className="flex flex-col gap-s1">
-        {steps.map((step) => (
-          <div
-            key={step.topic_id}
-            data-status={step.status}
-            className={`flex items-center gap-s2 text-row ${
-              step.status === 'next' ? 'text-accent font-semibold' : 'text-ink'
-            }`}
-          >
-            <span className="flex-1 min-w-0">{step.label}</span>
-            <span className="w-11 h-[3px] bg-sunk overflow-hidden">
+      <div className="flex flex-col gap-gap">
+        {steps.map((step) => {
+          const percentage = Math.round(step.mastery * 100);
+          const rowTone =
+            step.status === 'next'
+              ? 'text-accent font-semibold'
+              : step.status === 'done'
+                ? 'text-done font-medium'
+                : 'text-ink';
+
+          return (
+            <div key={step.topic_id} data-status={step.status} className="flex flex-col gap-s1">
+              <div className={`flex items-baseline gap-s2 text-row leading-tight ${rowTone}`}>
+                <span className="min-w-0 flex-1">
+                  <span className="sr-only">{step.status}. </span>
+                  {step.label}
+                </span>
+                <span className="numeric shrink-0 text-cite font-regular">{percentage}%</span>
+              </div>
               <span
-                className={`block h-full ${step.status === 'next' ? 'bg-accent' : 'bg-done'}`}
-                style={{ width: `${Math.round(step.mastery * 100)}%` }}
-              />
-            </span>
-            <span className="numeric text-cite text-muted">{step.mastery.toFixed(2)}</span>
-          </div>
-        ))}
+                role="progressbar"
+                aria-label={`${step.label} mastery`}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={percentage}
+                className="h-s1 w-full overflow-hidden bg-sunk"
+              >
+                <span
+                  className={`block h-full ${step.status === 'next' ? 'bg-accent' : 'bg-done'}`}
+                  style={{ width: `${percentage}%` }}
+                />
+              </span>
+            </div>
+          );
+        })}
       </div>
     </BlockShell>
   );

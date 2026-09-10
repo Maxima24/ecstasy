@@ -1,3 +1,5 @@
+import { BlockShell } from '@/blocks/BlockShell';
+
 /**
  * Loading state.
  *
@@ -12,15 +14,26 @@
 export function ScreenSkeleton() {
   return (
     <div className="flex flex-col gap-block min-h-80" aria-busy="true" aria-live="polite">
-      <div className="border-l-2 border-line pl-s3 flex flex-col gap-gap">
-        <span className="sr-only">Loading</span>
-        <div className="h-3 w-16 bg-sunk" />
-        <div className="h-4 w-3/5 bg-sunk" />
-        <div className="h-3 w-11/12 bg-sunk" />
-        <div className="h-6 w-2/5 bg-sunk" />
-        <div className="h-3 w-4/5 bg-sunk" />
-        <div className="h-6 w-1/3 bg-sunk" />
-      </div>
+      <span className="sr-only">Loading response</span>
+      <BlockShell label="Loading" muted>
+        <div className="flex flex-col gap-gap" aria-hidden="true">
+          <div className="h-s3 w-2/3 bg-sunk" />
+          <div className="flex items-start gap-s2">
+            <div className="h-s2 w-s5 shrink-0 bg-sunk" />
+            <div className="flex min-w-0 flex-1 flex-col gap-s2">
+              <div className="h-s2 w-full bg-sunk" />
+              <div className="h-s3 w-2/5 bg-sunk" />
+            </div>
+          </div>
+          <div className="flex items-start gap-s2">
+            <div className="h-s2 w-s5 shrink-0 bg-sunk" />
+            <div className="flex min-w-0 flex-1 flex-col gap-s2">
+              <div className="h-s2 w-4/5 bg-sunk" />
+              <div className="h-s3 w-1/3 bg-sunk" />
+            </div>
+          </div>
+        </div>
+      </BlockShell>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { BlockShell } from './BlockShell';
+
 /**
  * Shown in place of a block that could not render, and in place of the whole
  * screen when the block array is empty.
@@ -13,12 +15,9 @@ export function FallbackCard({
   action?: string;
 }) {
   return (
-    <div className="border-l-2 border-line pl-s3 flex flex-col gap-s1">
-      <span className="font-mono text-label tracking-label uppercase text-faint leading-tight">
-        Unavailable
-      </span>
-      <span className="text-body text-ink">{message}</span>
-      <span className="text-quiet text-muted">{action}</span>
-    </div>
+    <BlockShell label="Unavailable" muted>
+      <p className="text-body leading-body text-ink">{message}</p>
+      <p className="text-quiet leading-body text-muted">{action}</p>
+    </BlockShell>
   );
 }

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
 import { BlockRenderer } from '@/blocks/BlockRenderer';
+import { BlockShell } from '@/blocks/BlockShell';
 import { submitAnswer } from '@/lib/api';
 import { applyInvariants } from '@/lib/invariants';
 import { useProfile } from '@/lib/profile/context';
@@ -71,12 +72,14 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
   // constraint; this guarantees the shape.
   const blocks = data ? applyInvariants(profile, data.blocks) : [];
 
-  const transition =
+  const opacityTransition =
     phase === 'out'
-      ? 'opacity-0 -translate-y-1 duration-flip-out ease-expressive-out'
-      : phase === 'in'
-        ? 'opacity-100 translate-y-0 duration-flip-in ease-expressive-in'
-        : 'opacity-100 translate-y-0 duration-flip-in ease-expressive-in';
+      ? 'opacity-0 duration-flip-out ease-expressive-out'
+      : 'opacity-100 duration-flip-in ease-expressive-in';
+  const transformTransition =
+    phase === 'out'
+      ? '-translate-y-s2 duration-flip-out ease-expressive-out'
+      : 'translate-y-0 duration-flip-in ease-expressive-in';
 
   return (
     <Frame>
@@ -86,21 +89,23 @@ export function Screen({ question = DEMO_QUESTION }: { question?: string }) {
         {isPending ? (
           <ScreenSkeleton />
         ) : isError ? (
-          <div className="flex flex-col gap-s2">
-            <p className="text-body text-ink max-w-(--measure)">
+          <BlockShell label="Connection" muted>
+            <p className="text-body leading-body text-ink">
               {error instanceof Error ? error.message : 'The answer could not be loaded.'}
             </p>
             <button
               type="button"
               onClick={() => void refetch()}
-              className="text-quiet text-accent text-left"
+              className="self-start text-left text-quiet font-medium text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             >
               Try again
             </button>
-          </div>
+          </BlockShell>
         ) : (
-          <div className={`transition-[opacity,transform] ${transition}`}>
-            <BlockRenderer blocks={blocks} onQuizAnswered={handleAnswered} />
+          <div className={`transition-opacity ${opacityTransition}`}>
+            <div className={`transition-transform ${transformTransition}`}>
+              <BlockRenderer blocks={blocks} onQuizAnswered={handleAnswered} />
+            </div>
           </div>
         )}
       </main>
