@@ -43,6 +43,22 @@ pwsh -NoProfile -File scripts/Test-Policy.Tests.ps1
 pwsh -NoProfile -File scripts/Test-Foundation.ps1
 ```
 
+### If you are the frontend agent
+
+Stack is Next.js, App Router, TypeScript (ADR-0001). Work only under
+`frontend/`, target the `frontend` branch.
+
+**Server code in `frontend/` is a proxy, never an implementation.** Route
+Handlers and Server Actions may proxy and aggregate backend calls, hold
+httpOnly session cookies and refresh tokens, and reshape payloads for
+presentation. They may not implement domain rules, decide authorization, or
+open a database, cache, queue, or object-store connection. Forward credentials;
+never decide access.
+
+No data-store driver in the frontend manifest. No secret reachable from a
+`NEXT_PUBLIC_*` variable. Until a contract exists under `contracts/`, build
+against fixtures — do not read the backend source tree.
+
 ### If you are the backend agent
 
 Work only under `backend/` and target the `backend` branch. Your interface to
