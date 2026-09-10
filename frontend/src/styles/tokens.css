@@ -38,6 +38,19 @@
   --s5: 24px;
   --s6: 32px;
 
+  /* Separation BETWEEN blocks. Deliberately fixed — it does NOT compress with
+   * the profile.
+   *
+   * Why: the rail is per-block, but at `strong` density (--gap 8px) adjacent
+   * rails read as one continuous line and blocks visually concatenate. A reader
+   * then cannot tell where one block ends, or which block a control belongs to.
+   * Block separation must stay well clear of within-block spacing at every
+   * profile: 28px against a worst case of 16px.
+   *
+   * Every block also carries its mono label. The label is not decoration — it
+   * is the second ownership cue, and it is required, not optional. */
+  --block-gap: 28px;
+
   /* Radius appears on exactly two things: the profile chip and the play
      control. Nothing else is rounded, because nothing else is enclosed. */
   --radius: 4px;
@@ -56,6 +69,34 @@
   --dur-flip-in:   250ms;
   --dur-reorder:   300ms;
   --dur-feedback:   70ms;
+
+  /* -------------------------------------------------------------------------
+   * Type scale.
+   *
+   * Sizes in `em` are relative to --body and therefore SCALE with the profile.
+   * Sizes in `px` deliberately DO NOT — chrome and labels stay put so the flip
+   * reads as the content changing rather than the whole app zooming.
+   *
+   * There is no --t-heading: block titles are body-sized at --w-semibold. At
+   * 375px a separate heading size buys nothing and costs vertical space.
+   * ---------------------------------------------------------------------- */
+  --t-body:   var(--body);   /* profile-dependent */
+  --t-title:  1em;           /* block titles — same size, heavier weight */
+  --t-row:    0.84em;        /* roadmap rows, answer options */
+  --t-expr:   0.82em;        /* KaTeX output, inline expressions */
+  --t-quiet:  0.74em;        /* collapsed transcript, secondary notes */
+  --t-cite:   0.62em;        /* citations, step indices, streak */
+  --t-label:  10px;          /* mono block label — fixed */
+  --t-chrome: 13px;          /* header and ask bar — fixed */
+
+  --w-regular:  400;
+  --w-medium:   500;
+  --w-semibold: 600;
+
+  --lh-tight: 1.25;          /* labels, chrome, single-line rows */
+  --lh-body:  var(--lead);   /* profile-dependent */
+
+  --track-label: 0.12em;     /* uppercase mono labels need the air */
 
   /* Defaults, overridden per profile below. */
   --measure: 40ch;

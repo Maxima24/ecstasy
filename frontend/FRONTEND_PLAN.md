@@ -99,8 +99,8 @@ Not yet installed: `katex`, `framer-motion` (or a CSS-only equivalent — see §
 
 | Question | Impact | Default if undecided |
 |---|---|---|
-| **Colour system** | Every component. No palette has been specified anywhere in the PRD or research. | Neutral greys + one accent for `next`, semantic green/amber/red for mastery states |
-| **Spacing scale** | Layout consistency across six block components | 4px base: 4 / 8 / 12 / 16 / 24 / 32 |
+| ~~Colour system~~ | Settled | See `src/styles/tokens.css`. Four per-profile accents confined to rail, chip, `next` row and controls |
+| ~~Spacing scale~~ | Settled | 4px base plus a fixed 28px `--block-gap` |
 | **Component surface treatment** | Whether blocks read as cards, panels, or bare sections | Bare sections with hairline separators; card treatment reserved for the block that needs emphasis |
 | **`framer-motion` vs CSS transitions** | ~34 KB against a 200 KB budget | CSS transitions + FLIP; adopt `framer-motion` only if `AnimatePresence` exit choreography proves necessary |
 | **Empty/first-run state** | §9 of the PRD says the judge lands in a seeded account with partial mastery, so this may never render | Skip until Day 7 |
@@ -578,6 +578,21 @@ custom properties and stay profile-unaware.
 
 If a component needs to know the profile, that is a design error — add a token
 instead.
+
+### Two constraints from design review
+
+**Block separation does not compress.** `--block-gap` is fixed at 28px across
+all four profiles. The rail is per-block, but at `strong` density (`--gap` 8px)
+adjacent rails read as one continuous line and blocks visually concatenate — a
+reader then cannot tell where one block ends or which block a control belongs
+to. The mono block label is the second ownership cue and is **required on every
+block**, not optional.
+
+**The accent does not carry the flip.** A 2px hue change largely disappears in a
+compressed phone recording. What makes the flip read as structural is the change
+in block type, order and count, plus the density and type shift — the accent
+only confirms which profile is selected. Do not weaken the invariant clamps (§7)
+on the assumption that colour is doing the work.
 
 ---
 
