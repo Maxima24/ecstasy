@@ -8,7 +8,7 @@ import 'server-only';
  * needs goes in a `NEXT_PUBLIC_*` variable and is public by definition — never
  * put a secret there.
  *
- * See ADR-0001.
+ * See ADR-0001 and FRONTEND_PLAN.md §6.
  */
 
 function positiveInt(raw: string | undefined, fallback: number): number {
@@ -28,13 +28,31 @@ export const serverEnv = {
   /**
    * Base URL of the backend API.
    *
-   * `null` means no backend is configured yet, and the proxy serves fixtures
-   * instead. That is the expected state until the backend stack is chosen.
+   * `null` means no backend is configured and the proxy serves fixtures. That
+   * is the expected state until Day 8.
    */
   backendUrl,
 
+  /**
+   * Static bearer token (PRD §3.1).
+   *
+   * Demo-grade, but it stays server-side: the browser never sees it. This is
+   * the reason the proxy exists at all rather than the browser calling the
+   * backend directly.
+   */
+  apiToken: process.env.API_TOKEN?.trim() || null,
+
   /** Abandon a backend call after this many milliseconds. */
   backendTimeoutMs: positiveInt(process.env.BACKEND_TIMEOUT_MS, 5_000),
+
+  /**
+   * Artificial delay on fixture responses.
+   *
+   * 600 ms by default, per PRD §4.3 — every loading and skeleton state is built
+   * against this. Skeletons only ever seen against a warm cache will be wrong
+   * on the day the cache misses.
+   */
+  fixtureDelayMs: positiveInt(process.env.FIXTURE_DELAY_MS, 600),
 } as const;
 
 /** True while no backend is configured and the proxy is serving fixtures. */
