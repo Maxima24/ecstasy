@@ -19,6 +19,12 @@ Read these documents in order before contributing:
 5. [Quality gates](docs/QUALITY.md)
 6. [Handoff protocol](HANDOFF.md)
 
+> **Running an event?** [Hackathon mode](RULES.md#10-hackathon-mode-time-boxed-exception)
+> is a declared, time-boxed exception that relaxes review ceremony (second
+> approver, governance synchronization PRs, contract-before-implementation
+> ordering) while keeping secret handling, path boundaries, and honest evidence
+> fully in force. It is off until governance records a window.
+
 Automated contributors must also follow [AGENTS.md](AGENTS.md).
 
 ## Permanent branches

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Repository rules
+    url: https://github.com/Maxima24/ecstasy/blob/main/RULES.md
+    about: Normative rules for humans, automation, and coding agents.
+  - name: Contribution workflow
+    url: https://github.com/Maxima24/ecstasy/blob/main/CONTRIBUTING.md
+    about: How to make work ready, branch, implement, review, and hand off.
+  - name: Contract policy
+    url: https://github.com/Maxima24/ecstasy/blob/main/docs/CONTRACTS.md
+    about: How to classify contract impact and change an approved interface.

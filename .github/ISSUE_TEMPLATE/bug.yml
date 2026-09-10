@@ -1,0 +1,100 @@
+name: Bug
+description: Report a defect in shipped or integrated behaviour.
+title: "fix: "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A stack defect found during integration is fixed on the **owning stack
+        branch first**, then forwarded to `integration` (`RULES.md` section 6).
+        Never patch it directly on `integration`.
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Owning scope
+      description: Which branch owns the defective behaviour?
+      options:
+        - governance
+        - frontend
+        - backend
+        - integration
+        - unknown
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where it was observed
+      placeholder: branch, commit SHA, environment, or release tag
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs actual
+      value: |
+        **Expected:**
+
+        **Actual:**
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Smallest reliable sequence. Redact sensitive values.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        Logs, response samples, or screenshots. Redact credentials, tokens, and
+        personal data before pasting.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contract-impact
+    attributes:
+      label: Contract impact of the fix
+      description: If the fix changes a shared interface, it is a contract change.
+      options:
+        - none
+        - compatible
+        - breaking
+        - not yet known
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Release impact
+      options:
+        - Blocks release
+        - Degrades a shipped capability
+        - Minor or cosmetic
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Hygiene
+      options:
+        - label: Evidence above contains no credential or sensitive value
+          required: true
+        - label: This is a defect report, not a flaky test being re-run until green
+          required: true

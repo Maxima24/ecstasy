@@ -1,0 +1,101 @@
+name: Contract change
+description: Propose adding or changing an approved interface under contracts/.
+title: "contract: "
+labels: ["type:contract"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Contract changes are approved on `main` **before** either stack
+        implements them, and require both frontend and backend owner approval
+        (`RULES.md` section 5). The backend implementation does not redefine the
+        contract, and frontend assumptions do not extend it.
+
+  - type: textarea
+    id: consumer-need
+    attributes:
+      label: Consumer need
+      description: Which consumer needs what, and why the current interface is insufficient.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact classification
+      options:
+        - compatible (MINOR)
+        - breaking (MAJOR)
+        - clarification only (PATCH)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Proposed contracts/VERSION
+      description: Current value, then the proposed value.
+      placeholder: "0.0.0 -> 0.1.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: interface
+    attributes:
+      label: Proposed interface
+      description: >-
+        Shape, examples, error behaviour, validation constraints, and security
+        effects. Attach or link the machine-readable artifact if it exists.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance scenarios
+      value: |
+        Given <starting state>
+        When <action>
+        Then <observable result>
+    validations:
+      required: true
+
+  - type: textarea
+    id: breaking-plan
+    attributes:
+      label: Breaking-change plan
+      description: >-
+        Required for a breaking proposal. Every field is mandatory in that case.
+      value: |
+        - Affected consumers and old behaviour:
+        - New behaviour and version boundary:
+        - Data or client migration:
+        - Coexistence, versioning, or feature-flag strategy:
+        - Deployment and rollback order:
+        - Removal criteria for deprecated behaviour:
+    validations:
+      required: false
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: How both stacks will verify conformance
+      description: >-
+        Frontend fixtures/generated clients, backend request/response
+        validation, and the integration drift check.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: approvals
+    attributes:
+      label: Required approvals
+      options:
+        - label: Frontend owner review requested
+          required: true
+        - label: Backend owner review requested
+          required: true
+        - label: >-
+            I understand this must merge to `main` and reach the permanent
+            branches before dependent implementations are integrated
+          required: true

@@ -1,0 +1,104 @@
+name: Feature
+description: Propose product behaviour with observable acceptance criteria.
+title: "feat: "
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Work is ready to implement only when it meets the definition of ready
+        in `docs/QUALITY.md`. Large or ambiguous work should use
+        `docs/templates/FEATURE_SPEC.md` instead of this form alone.
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Which permanent branch owns this work?
+      options:
+        - governance
+        - frontend
+        - backend
+        - integration
+        - frontend + backend (cross-stack)
+    validations:
+      required: true
+
+  - type: input
+    id: owner
+    attributes:
+      label: Accountable owner
+      description: One person. Not a team.
+      placeholder: "@handle"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and outcome
+      description: The user problem and the observable outcome — not an implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Cover success *and* relevant failure behaviour.
+      value: |
+        Given <starting state>
+        When <action>
+        Then <observable result>
+    validations:
+      required: true
+
+  - type: dropdown
+    id: contract-impact
+    attributes:
+      label: Contract impact
+      description: >-
+        Cross-stack behaviour must have its contract approved on `main` before
+        either implementation is ready to merge.
+      options:
+        - none
+        - compatible
+        - breaking
+    validations:
+      required: true
+
+  - type: textarea
+    id: contract-reasoning
+    attributes:
+      label: Why that classification
+      description: >-
+        A clarification that exposes previous implementation drift is not
+        automatically `none`. Classify by consumer impact.
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies, constraints, and rollout
+      placeholder: Blocking issues, feature flag, sequencing, or "None"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implications
+    attributes:
+      label: Security, privacy, migration, and accessibility implications
+      placeholder: Details, or "None identified"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Definition of ready
+      options:
+        - label: Scope, owner, and observable outcome are stated above
+          required: true
+        - label: No credential or sensitive value appears in this issue
+          required: true

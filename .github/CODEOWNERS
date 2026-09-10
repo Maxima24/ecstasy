@@ -1,0 +1,48 @@
+# Code owners
+#
+# STATUS: INACTIVE. Every rule below is commented out on purpose.
+#
+# An active CODEOWNERS rule that names a team which does not exist (or that
+# lacks repository access) silently blocks every pull request touching the
+# matched path: GitHub cannot request the required review, so the merge button
+# never unlocks. Keep these rules commented until the teams exist.
+#
+# TO ACTIVATE
+#   1. Create the teams in the GitHub organisation and grant them repository
+#      access.
+#   2. Replace each @ORG/... placeholder with the real team or user handle.
+#   3. Uncomment the rules you want enforced.
+#   4. Mirror the same owners in docs/OWNERSHIP.md through the same PR.
+#   5. Verify with docs/GITHUB_SETUP.md section 7: open one harmless PR per
+#      owned path and confirm the expected reviewer is auto-requested.
+#
+# During Hackathon Mode (RULES.md section 10) this file is expected to stay
+# inactive. Reinstating it is part of exiting the exception.
+
+# ---------------------------------------------------------------------------
+# Default owner for anything not matched below.
+# ---------------------------------------------------------------------------
+# *                     @ORG/governance
+
+# ---------------------------------------------------------------------------
+# Governance: rules, process, and the validation scripts that enforce them.
+# ---------------------------------------------------------------------------
+# /RULES.md             @ORG/governance
+# /CONTRIBUTING.md      @ORG/governance
+# /HANDOFF.md           @ORG/governance
+# /AGENTS.md            @ORG/governance
+# /docs/                @ORG/governance
+# /scripts/             @ORG/governance
+# /.github/             @ORG/governance
+
+# ---------------------------------------------------------------------------
+# Contracts: both consumers own the shared interface (RULES.md section 5).
+# ---------------------------------------------------------------------------
+# /contracts/           @ORG/frontend @ORG/backend @ORG/governance
+
+# ---------------------------------------------------------------------------
+# Stack implementation. These paths exist only on their permanent branches.
+# ---------------------------------------------------------------------------
+# /frontend/            @ORG/frontend
+# /backend/             @ORG/backend
+# /integration/         @ORG/integration

@@ -1,0 +1,55 @@
+name: Governance
+
+# The job names below are the check names referenced in docs/GITHUB_SETUP.md
+# sections 5 and 6: "Repository policy" and "Foundation validation".
+# Renaming a job renames the required status check and will silently detach
+# any branch ruleset that requires it.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - frontend
+      - backend
+      - integration
+  push:
+    branches:
+      - main
+      - frontend
+      - backend
+      - integration
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: governance-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-policy:
+    name: Repository policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Run repository policy checks
+        shell: pwsh
+        # A pull-request checkout is a detached merge commit, so the branch
+        # under evaluation must be passed explicitly.
+        run: >-
+          ./scripts/Test-Policy.Tests.ps1
+          -Branch '${{ github.head_ref || github.ref_name }}'
+
+  foundation-validation:
+    name: Foundation validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Run foundation validation
+        shell: pwsh
+        run: ./scripts/Test-Foundation.ps1
