@@ -148,11 +148,11 @@ ceremony. It never relaxes safety.
 Hackathon mode is active only while this section records an unexpired window.
 Governance MUST fill in both dates in the same pull request that activates it.
 
-- **Active:** `[no]`
-- **Window:** `[YYYY-MM-DD HH:MM]` to `[YYYY-MM-DD HH:MM]` (`[timezone]`)
-- **Event:** `[event name]`
-- **Declared by:** `[person]`
-- **Tracking issue:** `[#issue]`
+- **Active:** **yes**
+- **Window:** 2026-09-10 18:14 to 2026-09-20 23:59 (WAT, UTC+01:00)
+- **Event:** Ecstasy 10-day build
+- **Declared by:** @Maxima24 (Steel Maxima), governance owner
+- **Tracking issue:** Not filed
 
 An undated or expired window means hackathon mode is **off**, and every default
 rule applies without further action.
@@ -192,7 +192,7 @@ rules and keeps running during the window.
 
 When the window closes, governance MUST, in one pull request:
 
-1. set **Active** back to `[no]` and clear the window;
+1. set **Active** back to `no` and clear the window;
 2. open a corrective issue for anything merged without a second approval that
    still needs review;
 3. reconcile `contracts/VERSION` with the interfaces actually shipped;
