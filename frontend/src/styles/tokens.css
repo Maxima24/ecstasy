@@ -1,0 +1,148 @@
+/*
+ * Ecstacy design tokens.
+ *
+ * THE CONTRACT: if a value is not in this file, it does not go in a component.
+ * No literal hex, no one-off padding, no `16px` typed into a className.
+ * Need a value that isn't here? Add it here first, in its own commit.
+ *
+ * Profile reaches components ONLY through these custom properties. No component
+ * reads the profile — not a prop, not context, not a class name. A component
+ * that branches on profile is a design error.
+ *
+ * See frontend/FRONTEND_PLAN.md §10–§11 and the design system reference.
+ */
+
+/* ---------------------------------------------------------------------------
+ * Fixed. Identical across all four profiles.
+ *
+ * The product is light-only: PRD §1 puts dark mode out of scope. Do NOT add a
+ * prefers-color-scheme block here.
+ * ------------------------------------------------------------------------- */
+[data-profile] {
+  --ground:  #F8F9F9;   /* page behind everything */
+  --surface: #FFFFFF;   /* chrome only — header and ask bar */
+  --sunk:    #EFF2F2;   /* bar tracks */
+  --ink:     #14181A;   /* body text, expressions */
+  --muted:   #5A666B;   /* secondary text, mastery values */
+  --faint:   #8A959A;   /* citations, step indices, labels */
+  --line:    #E3E7E9;   /* hairlines, inactive rail */
+
+  --done:    #2C7A5B;   /* mastered topics, correct answers */
+  --done-bg: #E6F1EB;
+
+  /* Spacing. Six steps; --s6 is reserved and currently unused. */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+
+  /* Radius appears on exactly two things: the profile chip and the play
+     control. Nothing else is rounded, because nothing else is enclosed. */
+  --radius: 4px;
+
+  --rail: 2px;
+
+  /* Motion — IBM Carbon curves, matching the IBM Plex type system.
+     Expressive is reserved for the profile flip. Everything a finger
+     touches uses productive. */
+  --ease-expressive-in:  cubic-bezier(0.4, 0.14, 0.3, 1);
+  --ease-expressive-out: cubic-bezier(0.4, 0.14, 1, 1);
+  --ease-productive-in:  cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-productive-out: cubic-bezier(0.2, 0, 1, 0.9);
+
+  --dur-flip-out:  100ms;
+  --dur-flip-in:   250ms;
+  --dur-reorder:   300ms;
+  --dur-feedback:   70ms;
+
+  /* Defaults, overridden per profile below. */
+  --measure: 40ch;
+  --gap: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Per profile.
+ *
+ * --accent appears on the rail, the profile chip, the `next` roadmap row, and
+ * interactive controls. NOWHERE ELSE. It is a highlight, never a fill — no
+ * accent-coloured panels, no tinted block backgrounds.
+ *
+ * Type values are bound to the PRD §4.4 table. The typeface research allows
+ * slightly wider ranges (rusty 19–20px / 30–34ch, strong 15–16px); treat those
+ * as the room available if a real-phone review calls for it, not as licence to
+ * drift.
+ *
+ * --gap is what makes density a profile property rather than four hand-tuned
+ * components.
+ * ------------------------------------------------------------------------- */
+
+/* Calm blue. Patient, unhurried — a re-learner is not being chased. */
+[data-profile="rusty"] {
+  --accent:    #2C6E9B;
+  --accent-bg: #E7EFF5;
+  --body:      19px;
+  --lead:      1.6;
+  --measure:   32ch;
+  --track:     0;
+  --gap:       16px;
+}
+
+/* Burnt orange. Reads as "next action" without alarm. */
+[data-profile="time_poor"] {
+  --accent:    #B4641C;
+  --accent-bg: #F7EDE3;
+  --body:      16px;
+  --lead:      1.45;
+  --measure:   40ch;
+  --track:     0;
+  --gap:       10px;
+}
+
+/* Violet. Ambient, recedes — the screen is secondary to audio. */
+[data-profile="hands_free"] {
+  --accent:    #6A5AA6;
+  --accent-bg: #EDEAF5;
+  --body:      15px;
+  --lead:      1.6;
+  --measure:   38ch;
+  --track:     0.01em;
+  --gap:       12px;
+}
+
+/* Crimson. Sharp and timed. The only profile with a clock. */
+[data-profile="strong"] {
+  --accent:    #A8322C;
+  --accent-bg: #F6E7E6;
+  --body:      15px;
+  --lead:      1.4;
+  --measure:   45ch;
+  --track:     0;
+  --gap:       8px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Numerals.
+ *
+ * IBM Plex does not slash its zero by default; the feature must be requested.
+ * Apply to answer options, worked-solution steps, mastery values, timers — any
+ * numeric UI where 0/O confusion costs the learner something.
+ * ------------------------------------------------------------------------- */
+.numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: "zero" 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Reduced motion. The screen still changes, it just does not travel.
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-profile] {
+    --dur-flip-out: 1ms;
+    --dur-flip-in:  1ms;
+    --dur-reorder:  1ms;
+    --dur-feedback: 1ms;
+  }
+}
