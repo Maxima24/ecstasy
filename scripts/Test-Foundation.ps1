@@ -146,9 +146,14 @@ Write-Detail ''
 # --------------------------------------------------------------------------
 Write-Detail 'Markdown links'
 
+# Only our own Markdown. Dependency and build directories carry thousands of
+# READMEs whose links point outside the package, and some contain characters
+# that are not legal in a Windows path.
+$excluded = '[\\/](\.git|node_modules|\.next|dist|build|coverage|out)[\\/]'
+
 $markdownFiles = @(
-    Get-ChildItem -LiteralPath $RepoRoot -Filter '*.md' -Recurse -File |
-        Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' }
+    Get-ChildItem -LiteralPath $RepoRoot -Filter '*.md' -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -notmatch $excluded }
 )
 
 $linkPattern = [regex]'\[[^\]]*\]\(([^)]+)\)'
@@ -172,8 +177,19 @@ foreach ($file in $markdownFiles) {
         }
 
         $checkedLinks++
-        $resolved = Join-Path $file.DirectoryName $path
-        if (-not (Test-Path -LiteralPath $resolved)) {
+
+        # A link may contain characters that are not legal in a path. Treat that
+        # as "does not resolve" rather than letting Test-Path throw.
+        $exists = $false
+        try {
+            $resolved = Join-Path $file.DirectoryName $path
+            $exists = Test-Path -LiteralPath $resolved
+        }
+        catch {
+            $exists = $false
+        }
+
+        if (-not $exists) {
             $source = Get-RelativePath -FullName $file.FullName
             $brokenLinks++
             $script:Failures.Add("broken link in ${source}: $target")
