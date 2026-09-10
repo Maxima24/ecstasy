@@ -51,7 +51,7 @@ Complete this table before the first implementation issue is ready.
 
 | Component | Responsibility | Owner | Inputs | Outputs | Runtime |
 | --- | --- | --- | --- | --- | --- |
-| Frontend | `[responsibility]` | Frontend owner | Approved contract | User interactions | `[runtime]` |
+| Frontend | Next.js App Router UI; server code limited to a BFF proxy ([ADR-0001](decisions/0001-frontend-stack-nextjs.md)) | Frontend owner | Approved contract | User interactions | Node.js / Next.js |
 | Backend | `[responsibility]` | Backend owner | Approved requests/events | Approved responses/events | `[runtime]` |
 | Data store | `[responsibility]` | Backend owner | Domain operations | Durable data | `[technology]` |
 | Integration | Compose and verify the product | Integrator | Stack artifacts | Release evidence | `[runtime]` |
@@ -75,6 +75,9 @@ contracts, source, fixtures, logs, screenshots, issues, or handoffs.
 - Shared behavior has one approved contract under `contracts/`.
 - The backend enforces domain and authorization rules; client checks are not a
   security boundary.
+- Server code under `frontend/` is a backend-for-frontend proxy. It never
+  implements domain rules, decides authorization, or opens a data connection
+  ([ADR-0001](decisions/0001-frontend-stack-nextjs.md)).
 - Each stack can be built and tested without copying source from the other.
 - Integration tests exercise published interfaces, not private implementation.
 - Deployment and rollback procedures are reproducible from an immutable

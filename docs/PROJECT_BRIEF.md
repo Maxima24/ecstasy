@@ -39,7 +39,7 @@ ready for implementation.
 
 ## Constraints
 
-- **Frontend:** `[stack or undecided]`
+- **Frontend:** Next.js (App Router, TypeScript) — see [ADR-0001](decisions/0001-frontend-stack-nextjs.md)
 - **Backend:** `[stack or undecided]`
 - **Data:** `[classification, storage, residency, retention]`
 - **Interfaces:** `[REST, GraphQL, events, or undecided]`

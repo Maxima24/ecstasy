@@ -30,5 +30,5 @@ may later become `Superseded by ADR-NNNN`. The relevant owners listed in
 
 | ADR | Status | Date | Decision |
 | --- | --- | --- | --- |
-| None yet | — | — | — |
+| [ADR-0001](decisions/0001-frontend-stack-nextjs.md) | Accepted | 2026-09-10 | Next.js for the frontend; server code limited to a BFF proxy |
 
