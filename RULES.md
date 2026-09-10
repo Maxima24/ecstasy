@@ -152,7 +152,7 @@ Governance MUST fill in both dates in the same pull request that activates it.
 - **Window:** 2026-09-10 18:14 to 2026-09-20 23:59 (WAT, UTC+01:00)
 - **Event:** Ecstasy 10-day build
 - **Declared by:** @Maxima24 (Steel Maxima), governance owner
-- **Tracking issue:** Not filed
+- **Tracking issue:** #1
 
 An undated or expired window means hackathon mode is **off**, and every default
 rule applies without further action.
