@@ -149,8 +149,8 @@ Hackathon mode is active only while this section records an unexpired window.
 Governance MUST fill in both dates in the same pull request that activates it.
 
 - **Active:** **yes**
-- **Window:** 2026-09-10 18:14 to 2026-09-20 23:59 (WAT, UTC+01:00)
-- **Event:** Ecstasy 10-day build
+- **Window:** 2026-09-10 18:14 to 2026-09-26 23:59 (WAT, UTC+01:00)
+- **Event:** Prometheus Fall Classic — Ectasy build (submission 2026-09-26)
 - **Declared by:** @Maxima24 (Steel Maxima), governance owner
 - **Tracking issue:** #1
 
