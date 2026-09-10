@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 
+import { ProfileProvider } from "@/lib/profile/context";
 import { QueryProvider } from "@/lib/query/provider";
 import "./globals.css";
 
@@ -56,7 +57,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         `rusty` is the documented default for a first-time render.
       */}
       <body data-profile="rusty" className="min-h-full flex flex-col">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <ProfileProvider>{children}</ProfileProvider>
+        </QueryProvider>
       </body>
     </html>
   );

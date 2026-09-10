@@ -8,7 +8,7 @@ import { ExplainerCard } from './ExplainerCard';
 import { FallbackCard } from './FallbackCard';
 import { Flashcards } from './Flashcards';
 import { ProgressPanel } from './ProgressPanel';
-import { Quiz } from './Quiz';
+import { Quiz, type QuizAnswer } from './Quiz';
 import { Roadmap } from './Roadmap';
 
 /**
@@ -26,14 +26,14 @@ import { Roadmap } from './Roadmap';
  * without adding a case here is a compile error, which is a stronger guarantee
  * than the registry offered.
  */
-function renderBlock(block: Block) {
+function renderBlock(block: Block, onQuizAnswered?: (answer: QuizAnswer) => void) {
   switch (block.type) {
     case 'explainer_card':
       return <ExplainerCard {...block} />;
     case 'audio_explainer':
       return <AudioExplainer {...block} />;
     case 'quiz':
-      return <Quiz {...block} />;
+      return <Quiz {...block} onAnswered={onQuizAnswered} />;
     case 'roadmap':
       return <Roadmap {...block} />;
     case 'flashcards':
@@ -56,7 +56,13 @@ function renderBlock(block: Block) {
  * one-block `rusty` screen and a `strong` drill. Without it the profile flip
  * reads as a jump rather than a rebuild.
  */
-export function BlockRenderer({ blocks }: { blocks: Block[] }) {
+export function BlockRenderer({
+  blocks,
+  onQuizAnswered,
+}: {
+  blocks: Block[];
+  onQuizAnswered?: (answer: QuizAnswer) => void;
+}) {
   if (blocks.length === 0) {
     return (
       <div className="flex flex-col gap-block min-h-80">
@@ -73,7 +79,7 @@ export function BlockRenderer({ blocks }: { blocks: Block[] }) {
           label={block.type}
           fallback={<FallbackCard />}
         >
-          {renderBlock(block)}
+          {renderBlock(block, onQuizAnswered)}
         </BlockBoundary>
       ))}
     </div>
