@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Quiz as QuizBlock } from '@/lib/types';
 
 import { BlockShell } from './BlockShell';
+import { Expression } from './Expression';
 
 export type QuizAnswer = {
   questionId: string;
@@ -75,11 +76,7 @@ export function Quiz({
       </div>
 
       <p className="text-body font-medium leading-body text-ink">{question.stem}</p>
-      {question.stem_expr ? (
-        <span className="numeric expr py-s1 text-expr font-medium leading-tight text-ink">
-          {question.stem_expr}
-        </span>
-      ) : null}
+      {question.stem_expr ? <Expression tex={question.stem_expr} /> : null}
 
       <div className="flex flex-col">
         {question.options.map((option, i) => {

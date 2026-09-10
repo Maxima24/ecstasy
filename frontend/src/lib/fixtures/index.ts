@@ -35,7 +35,11 @@ const EXPLAINER: Block = {
   title: 'Isolating the variable',
   steps: [
     { text: 'Subtract 5 from both sides.', expr: '3x = 15' },
-    { text: 'Divide both sides by 3.', expr: 'x = 5' },
+    // Escaped: in TypeScript '\f' is a form feed, so TeX needs a doubled
+    // backslash in source. Single-backslash TeX silently becomes a control
+    // character and KaTeX reports an unexpected-character parse error.
+    { text: 'Divide both sides by 3.', expr: '\\frac{3x}{3} = \\frac{15}{3}' },
+    { text: 'So x is 5.', expr: 'x = 5' },
   ],
   citation: { chunk_id: 'os_alg_2_3', label: 'Linear Equations, 2.3' },
 };
@@ -58,10 +62,11 @@ const AUDIO: Block = {
   script:
     'To isolate x, subtract 5 from both sides, leaving 3x equals 15. ' +
     'Then divide both sides by 3, giving x equals 5.',
-  // Empty in fixtures: exercises the missing-audio failure path by default.
-  // Set a real URL here to build the happy path.
-  audio_url: '',
-  duration_ms: 34_000,
+  // A real, playable file so the audio control itself is visible. The failure
+  // path is exercised deliberately by BROKEN.deadAudio rather than by leaving
+  // the default profile unable to render its defining element.
+  audio_url: '/fixture-silence.wav',
+  duration_ms: 2_000,
   transcript_shown: false,
 };
 
@@ -100,7 +105,7 @@ const FLASHCARDS: Block = {
 const SCREENS: Record<Profile, Block[]> = {
   rusty: [EXPLAINER, ROADMAP, PROGRESS],
   time_poor: [PROGRESS, ROADMAP, FLASHCARDS],
-  hands_free: [EXPLAINER, FLASHCARDS],
+  hands_free: [AUDIO, EXPLAINER, FLASHCARDS],
   strong: [EXPLAINER, QUIZ, PROGRESS],
 };
 

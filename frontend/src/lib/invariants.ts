@@ -13,6 +13,20 @@ import type { AudioExplainer, Block, Profile } from './types';
  * here happens before any error boundary exists to catch it.
  */
 
+/**
+ * Join fragments into speakable prose.
+ *
+ * Step text already ends in a period; naively joining with ". " produced
+ * "both sides.. Divide". Terminate only what is unterminated.
+ */
+function sentences(parts: string[]): string {
+  return parts
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => (/[.!?]$/.test(part) ? part : `${part}.`))
+    .join(' ');
+}
+
 function hasAudio(blocks: Block[]): boolean {
   return blocks.some((b) => b.type === 'audio_explainer');
 }
@@ -32,7 +46,7 @@ function toAudio(block: Block): AudioExplainer {
 
   switch (block.type) {
     case 'explainer_card':
-      script = [block.title, ...block.steps.map((s) => s.text)].join('. ');
+      script = sentences([block.title, ...block.steps.map((s) => s.text)]);
       break;
     case 'quiz':
       script = block.questions[0]?.stem ?? '';

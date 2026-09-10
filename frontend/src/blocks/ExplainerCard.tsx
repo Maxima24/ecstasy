@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { ExplainerCard as ExplainerCardBlock } from '@/lib/types';
 
 import { BlockShell } from './BlockShell';
+import { Expression } from './Expression';
 
 /**
  * Segmented worked example. `rusty` depends on the segmentation — steps are an
@@ -66,11 +67,7 @@ export function ExplainerCard({ title, steps, citation }: ExplainerCardBlock) {
             </span>
             <div className="flex min-w-0 flex-1 flex-col gap-s2">
               <StepText text={step.text} />
-              {step.expr ? (
-                <span className="numeric expr py-s1 text-expr font-medium leading-tight text-ink">
-                  {step.expr}
-                </span>
-              ) : null}
+              {step.expr ? <Expression tex={step.expr} /> : null}
             </div>
           </div>
         ))}

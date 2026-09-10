@@ -25,14 +25,29 @@ export function ProgressPanel({
       </div>
 
       <div className="flex flex-col gap-gap">
-        {weakest_topics.map((topic) => {
+        {weakest_topics.map((topic, i) => {
           const percentage = Math.round(topic.mastery * 100);
+          // These rows are the learner's deficits, so none of them is `done`.
+          // Green here would congratulate someone on what they are worst at.
+          // The first is the one `next_action_label` names, so it takes the
+          // accent; the rest stay neutral.
+          const isNextAction = i === 0;
 
           return (
             <div key={topic.topic_id} className="flex flex-col gap-s1">
-              <div className="flex items-baseline gap-s2 text-row leading-tight text-ink">
+              <div
+                className={`flex items-baseline gap-s2 text-row leading-tight ${
+                  isNextAction ? 'font-semibold text-accent' : 'text-ink'
+                }`}
+              >
                 <span className="min-w-0 flex-1">{topic.label}</span>
-                <span className="numeric shrink-0 text-cite text-muted">{percentage}%</span>
+                <span
+                  className={`numeric shrink-0 text-cite ${
+                    isNextAction ? 'text-accent' : 'text-muted'
+                  }`}
+                >
+                  {percentage}%
+                </span>
               </div>
               <span
                 role="progressbar"
@@ -42,7 +57,10 @@ export function ProgressPanel({
                 aria-valuenow={percentage}
                 className="h-s1 w-full overflow-hidden bg-sunk"
               >
-                <span className="block h-full bg-done" style={{ width: `${percentage}%` }} />
+                <span
+                  className={`block h-full ${isNextAction ? 'bg-accent' : 'bg-faint'}`}
+                  style={{ width: `${percentage}%` }}
+                />
               </span>
             </div>
           );
