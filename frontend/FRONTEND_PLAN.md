@@ -722,11 +722,27 @@ fixed rather than something claimed.
 
 | Metric | Target | Verified by |
 |---|---|---|
-| Web fonts, total | ≤ 100 KB across 2–4 files | Build output |
+| Web fonts, total | ≤ 100 KB across 2–4 files — **see exception below** | Build output |
 | LCP, 3G throttled | < 2.5 s | Lighthouse, simulated 3G |
 | CLS | ≈ 0 | `size-adjust` fallback |
 | Profile transition, warm cache | < 400 ms | Prefetched cache read |
 | JS bundle, gzipped | < 200 KB | Excluding KaTeX |
+
+
+### Accepted exception: KaTeX fonts
+
+KaTeX ships 20 faces (~1.2 MB source, 576 KB bundled across 41 woff2 files with
+IBM Plex), covering notation this product will never use — Fraktur, Script, AMS.
+Subsetting to the faces GRE/GMAT algebra needs would bring it inside budget.
+
+**Decision: keep the full set.** Any expression the backend produces will render,
+including notation nobody anticipated, and browsers fetch only the faces a page
+actually references — so the real per-visit cost is a fraction of the bundled
+total.
+
+This is a deliberate deviation, not an oversight. Lighthouse on Day 8 will flag
+the font budget; that is expected. Do not subset the KaTeX fonts without asking
+— the coverage is the point.
 
 Verify with Lighthouse on **simulated 3G**, not on a desktop connection.
 
