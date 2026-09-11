@@ -4,7 +4,7 @@
   "adaptation": {
     "state": "prerequisite_reset",
     "topic_id": "arithmetic",
-    "reason": "Back to arithmetic first — that is what linear equations depends on."
+    "reason": "Back to arithmetic first. That is what linear equations depends on."
   },
   "blocks": [
     {
