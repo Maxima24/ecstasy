@@ -1,0 +1,158 @@
+{
+  "linear_equations": {
+    "explainer": {
+      "title": "Isolating the variable",
+      "steps": [
+        {
+          "text": "Subtract 5 from both sides.",
+          "expr": "3x = 15"
+        },
+        {
+          "text": "Divide both sides by 3.",
+          "expr": "\\frac{3x}{3} = \\frac{15}{3}"
+        },
+        {
+          "text": "So x is 5.",
+          "expr": "x = 5"
+        }
+      ],
+      "citation": {
+        "chunk_id": "os_alg_2_3",
+        "label": "Linear Equations, 2.3"
+      }
+    },
+    "audio_script": "To isolate x, subtract 5 from both sides, leaving 3x equals 15. Then divide both sides by 3, giving x equals 5.",
+    "questions": {
+      "guided": {
+        "id": "linear_guided_01",
+        "stem": "Subtract 7 first. If 4x + 7 = 31, what is x?",
+        "stem_expr": null,
+        "options": [
+          "3",
+          "4",
+          "6",
+          "7",
+          "8"
+        ],
+        "answer_index": 2,
+        "rationale": "Subtracting 7 gives 4x = 24. Dividing by 4 gives x = 6."
+      },
+      "transfer": {
+        "id": "linear_transfer_01",
+        "stem": "If 5x - 4 = 26, what is x?",
+        "stem_expr": null,
+        "options": [
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "answer_index": 2,
+        "rationale": "Adding 4 gives 5x = 30. Dividing by 5 gives x = 6."
+      },
+      "timed": {
+        "id": "linear_timed_01",
+        "stem": "If 7x + 2 = 44, what is x?",
+        "stem_expr": null,
+        "options": [
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        "answer_index": 2,
+        "rationale": "Subtracting 2 gives 7x = 42. Dividing by 7 gives x = 6."
+      }
+    },
+    "flashcards": [
+      {
+        "front": "What undoes addition in an equation?",
+        "back": "Subtract the same amount from both sides."
+      },
+      {
+        "front": "What undoes multiplication in an equation?",
+        "back": "Divide both sides by the same non-zero number."
+      }
+    ]
+  },
+  "arithmetic": {
+    "explainer": {
+      "title": "Undoing addition first",
+      "steps": [
+        {
+          "text": "Start with the total.",
+          "expr": "31"
+        },
+        {
+          "text": "Remove the amount that was added.",
+          "expr": "31 - 7 = 24"
+        },
+        {
+          "text": "Check by adding it back.",
+          "expr": "24 + 7 = 31"
+        }
+      ],
+      "citation": {
+        "chunk_id": "os_pre_alg_1_2",
+        "label": "Whole Number Operations, 1.2"
+      }
+    },
+    "audio_script": "Before solving the equation, practise its first inverse operation. Thirty one minus seven is twenty four; adding seven returns to thirty one.",
+    "questions": {
+      "guided": {
+        "id": "arithmetic_guided_01",
+        "stem": "Count back 7 from 31. What is 31 - 7?",
+        "stem_expr": null,
+        "options": [
+          "20",
+          "22",
+          "24",
+          "26",
+          "28"
+        ],
+        "answer_index": 2,
+        "rationale": "31 - 7 = 24. You can check because 24 + 7 = 31."
+      },
+      "transfer": {
+        "id": "arithmetic_transfer_01",
+        "stem": "What is 42 - 18?",
+        "stem_expr": null,
+        "options": [
+          "20",
+          "22",
+          "24",
+          "26",
+          "28"
+        ],
+        "answer_index": 2,
+        "rationale": "42 - 18 = 24."
+      },
+      "timed": {
+        "id": "arithmetic_timed_01",
+        "stem": "What is 15 + 9?",
+        "stem_expr": null,
+        "options": [
+          "20",
+          "22",
+          "24",
+          "26",
+          "28"
+        ],
+        "answer_index": 2,
+        "rationale": "15 + 9 = 24."
+      }
+    },
+    "flashcards": [
+      {
+        "front": "31 - 7",
+        "back": "24"
+      },
+      {
+        "front": "24 + 7",
+        "back": "31"
+      }
+    ]
+  }
+}

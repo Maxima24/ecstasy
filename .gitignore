@@ -25,3 +25,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 *.db
+
+# local database
+backend/ecstacy.db
+backend/ecstacy.db-*

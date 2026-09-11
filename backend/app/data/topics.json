@@ -1,0 +1,30 @@
+[
+  {
+    "topic_id": "linear_equations",
+    "label": "Linear equations",
+    "prerequisite_topic_id": "arithmetic",
+    "seed_mastery": 0.31,
+    "keywords": [
+      "linear equation",
+      "solve for x",
+      "isolate",
+      "equation",
+      "3x",
+      "x ="
+    ]
+  },
+  {
+    "topic_id": "arithmetic",
+    "label": "Arithmetic",
+    "prerequisite_topic_id": null,
+    "seed_mastery": 0.38,
+    "keywords": [
+      "arithmetic",
+      "subtract",
+      "add",
+      "minus",
+      "plus",
+      "difference"
+    ]
+  }
+]
