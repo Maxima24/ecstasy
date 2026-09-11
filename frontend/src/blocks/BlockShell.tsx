@@ -36,11 +36,17 @@ export function BlockShell({
 }) {
   return (
     <section
-      className={`rounded-block bg-surface shadow-block p-s4 border-l-4 flex flex-col gap-gap ${
-        muted ? 'border-line' : 'border-accent'
+      className={`flex h-full flex-col gap-gap rounded-block border border-l-4 bg-surface p-s4 shadow-block sm:p-s5 ${
+        muted ? 'border-line' : 'border-line border-l-accent'
       }`}
     >
-      <span className="font-mono text-label leading-tight text-faint">{label}</span>
+      <span className="flex items-center gap-s2 font-mono text-label leading-tight text-muted">
+        <span
+          className={`size-s1 rounded-full ${muted ? 'bg-line-strong' : 'bg-accent'}`}
+          aria-hidden="true"
+        />
+        {label}
+      </span>
       {children}
     </section>
   );

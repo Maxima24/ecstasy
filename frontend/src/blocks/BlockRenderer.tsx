@@ -67,14 +67,14 @@ export function BlockRenderer({
 }) {
   if (blocks.length === 0) {
     return (
-      <div className="flex flex-col gap-block min-h-80">
+      <div className="learning-grid">
         <FallbackCard message="There is nothing to show for this question yet." />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-block min-h-80">
+    <div className="learning-grid">
       {blocks.map((block, i) => (
         // `--block-index` drives the entrance stagger in globals.css, so blocks
         // arrive in sequence and the screen visibly assembles rather than
@@ -82,7 +82,8 @@ export function BlockRenderer({
         // itself keeps its own boundary.
         <div
           key={`${block.type}-${i}`}
-          className="block-enter"
+          className="block-enter min-w-0"
+          data-block-type={block.type}
           style={{ '--block-index': i } as CSSProperties}
         >
           <BlockBoundary label={block.type} fallback={<FallbackCard />}>

@@ -28,14 +28,14 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ecstacy",
+  title: "Ecstacy — Adaptive Quant Prep",
   description: "Adaptive GRE and GMAT quantitative reasoning practice.",
 };
 
 /*
- * Mobile only. PRD §1 puts desktop layout and dark mode out of scope, so the
- * viewport is locked and the colour scheme is declared light — a browser must
- * not apply its own dark treatment to a product that has no dark tokens.
+ * Mobile-first and responsive. Device-width keeps the smallest layout honest;
+ * the CSS expands the same screen through tablet and desktop. The colour scheme
+ * remains light because the product does not yet define dark tokens.
  */
 export const viewport: Viewport = {
   width: "device-width",

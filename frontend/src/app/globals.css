@@ -17,11 +17,13 @@
   /* Colour ------------------------------------------------------------- */
   --color-ground:     var(--ground);
   --color-surface:    var(--surface);
+  --color-surface-soft: var(--surface-soft);
   --color-sunk:       var(--sunk);
   --color-ink:        var(--ink);
   --color-muted:      var(--muted);
   --color-faint:      var(--faint);
   --color-line:       var(--line);
+  --color-line-strong: var(--line-strong);
   --color-done:       var(--done);
   --color-done-bg:    var(--done-bg);
   --color-accent:     var(--accent);
@@ -38,6 +40,8 @@
   --spacing-gap:   var(--gap);         /* gap-gap    — within a block, varies */
 
   /* Type --------------------------------------------------------------- */
+  --text-display: var(--t-display);
+  --text-subtitle: var(--t-subtitle);
   --text-body:   var(--t-body);
   --text-title:  var(--t-title);
   --text-row:    var(--t-row);
@@ -64,6 +68,10 @@
   --radius-token: var(--radius);
   --radius-block: var(--block-radius);
   --shadow-block: var(--block-shadow);
+  --shadow-shell: var(--shell-shadow);
+
+  --container-app: var(--app-width);
+  --container-reading: var(--reading-width);
 
   --ease-expressive-in:  var(--curve-expressive-in);
   --ease-expressive-out: var(--curve-expressive-out);
@@ -83,11 +91,84 @@
  * one would break the fixed token contract. This is deliberate — do not
  * reinstate the dark block create-next-app shipped here.
  */
-body {
+html {
   background: var(--ground);
+}
+
+body {
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 32rem),
+    var(--ground);
   color: var(--ink);
   font-family: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-bg);
+  color: var(--ink);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/*
+ * Responsive application frame.
+ *
+ * Phones use the full viewport. Larger screens get a centred workspace with a
+ * visible edge, while the content itself remains fluid between those points.
+ */
+.app-frame {
+  min-height: 100dvh;
+}
+
+.composer-dock {
+  padding-bottom: max(var(--s3), env(safe-area-inset-bottom));
+}
+
+/*
+ * Generated blocks become a considered two-column composition on desktop.
+ * The layout keys off block type, never profile: profile remains a data and
+ * token concern, while each block keeps a stable visual role.
+ */
+.learning-grid {
+  display: grid;
+  gap: var(--block-gap);
+  min-height: 20rem;
+}
+
+@media (min-width: 64rem) {
+  .app-frame {
+    min-height: calc(100dvh - (2 * var(--s5)));
+  }
+
+  .learning-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .learning-grid > [data-block-type="explainer_card"],
+  .learning-grid > [data-block-type="quiz"] {
+    grid-column: span 7;
+  }
+
+  .learning-grid > [data-block-type="audio_explainer"],
+  .learning-grid > [data-block-type="roadmap"],
+  .learning-grid > [data-block-type="flashcards"],
+  .learning-grid > [data-block-type="progress_panel"] {
+    grid-column: span 5;
+  }
+
+  .learning-grid > :only-child {
+    grid-column: 3 / span 8;
+  }
+
+  .learning-grid > :last-child:nth-child(odd):not(:only-child) {
+    grid-column: span 12;
+  }
 }
 
 /*

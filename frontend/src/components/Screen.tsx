@@ -15,12 +15,20 @@ import {
   progressQueryOptions,
   roadmapQueryOptions,
 } from '@/lib/query/keys';
-import type { Block, ProgressPanel, Roadmap } from '@/lib/types';
+import type { Block, InstructionalState, ProgressPanel, Roadmap } from '@/lib/types';
 
 import { AskBar, Frame, Header } from './chrome/Chrome';
 import { ScreenSkeleton } from './ScreenSkeleton';
 
 const DEMO_QUESTION = 'If 3x + 5 = 20, what is x?';
+
+const STATE_LABELS: Record<InstructionalState, string> = {
+  worked_transfer: 'Worked transfer',
+  guided_practice: 'Guided practice',
+  focused_practice: 'Focused practice',
+  timed_drill: 'Timed drill',
+  prerequisite_reset: 'Foundation reset',
+};
 
 /** Pull a block of a given type out of an ask response, to seed a live query. */
 function blockOfType<T extends Block['type']>(
@@ -125,46 +133,60 @@ export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: 
       ? '-translate-y-s2 duration-flip-out ease-expressive-out'
       : 'translate-y-0 duration-flip-in ease-expressive-in';
 
+  const sessionState = data?.adaptation
+    ? STATE_LABELS[data.adaptation.state]
+    : isError
+      ? 'Session interrupted'
+      : 'Building your study path';
+
   return (
     <Frame>
       <Header streak={progress?.streak ?? 0} />
 
-      <main className="flex-1 px-s3 py-s4">
+      <main className="flex-1 px-s3 py-s5 sm:px-s5 sm:py-s6 lg:px-s6">
+        <section className="mb-s6 grid items-end gap-s4 border-b border-line pb-s5 lg:grid-cols-12 lg:gap-s6">
+          <div className="min-w-0 lg:col-span-8">
+            <div className="mb-s3 flex items-center gap-s2 text-chrome font-medium text-muted">
+              <span className="size-s2 rounded-full bg-accent" aria-hidden="true" />
+              <span>{sessionState}</span>
+            </div>
+            <h1 className="max-w-reading text-display font-semibold leading-tight text-ink">
+              {question}
+            </h1>
+          </div>
+
+          <div className="lg:col-span-4 lg:border-l lg:border-line lg:pl-s5">
+            <p className="mb-s1 font-mono text-label leading-tight text-faint">Why this path</p>
+            <p className="text-quiet leading-body text-muted" role="status">
+              {data?.adaptation?.reason ??
+                (isError
+                  ? 'Reconnect to continue this study session.'
+                  : 'Reading your recent practice to choose the next useful step.')}
+            </p>
+          </div>
+        </section>
+
+        <div className="mx-auto w-full max-w-app">
         {isPending ? (
           <ScreenSkeleton />
         ) : isError ? (
-          <BlockShell label="Connection" muted>
-            <p className="text-body leading-body text-ink">
-              {error instanceof Error ? error.message : 'The answer could not be loaded.'}
-            </p>
-            <button
-              type="button"
-              onClick={() => void refetch()}
-              className="self-start text-left text-quiet font-medium text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-            >
-              Try again
-            </button>
-          </BlockShell>
+          <div className="mx-auto max-w-reading">
+            <BlockShell label="Connection" muted>
+              <p className="text-body leading-body text-ink">
+                {error instanceof Error ? error.message : 'The answer could not be loaded.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => void refetch()}
+                className="self-start text-left text-quiet font-medium text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+              >
+                Try again
+              </button>
+            </BlockShell>
+          </div>
         ) : (
           <div className={`transition-opacity ${opacityTransition}`}>
             <div className={`transition-transform ${transformTransition}`}>
-              {/*
-                Why this screen looks the way it does.
-
-                Rendered above the generated region, visible without any
-                interaction. This is the difference between a system that
-                adapts and one that appears to: the learner is told what was
-                observed and what the product decided because of it. It is not
-                an error state and must never be styled as one.
-              */}
-              {data?.adaptation ? (
-                <p
-                  className="mb-block text-quiet leading-body text-muted"
-                  role="status"
-                >
-                  {data.adaptation.reason}
-                </p>
-              ) : null}
               {/*
                 Keyed on question AND profile, for two reasons.
 
@@ -185,6 +207,7 @@ export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: 
             </div>
           </div>
         )}
+        </div>
       </main>
 
       <AskBar question={question} onAsk={setQuestion} busy={isFetching} />

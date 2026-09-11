@@ -13,7 +13,7 @@ import { BlockShell } from '@/blocks/BlockShell';
  */
 export function ScreenSkeleton() {
   return (
-    <div className="flex flex-col gap-block min-h-80" aria-busy="true" aria-live="polite">
+    <div className="mx-auto min-h-80 max-w-reading" aria-busy="true" aria-live="polite">
       <span className="sr-only">Loading response</span>
       <BlockShell label="Loading" muted>
         <div className="flex flex-col gap-gap" aria-hidden="true">

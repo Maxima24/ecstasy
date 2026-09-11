@@ -19,13 +19,15 @@
  * prefers-color-scheme block here.
  * ------------------------------------------------------------------------- */
 [data-profile] {
-  --ground:  #E7EDEF;   /* page behind everything — blocks sit ON this */
-  --surface: #FFFFFF;   /* raised blocks, header, ask bar */
-  --sunk:    #EDF1F3;   /* bar tracks, inside a raised surface */
-  --ink:     #14181A;   /* body text, expressions */
-  --muted:   #5A666B;   /* secondary text, mastery values */
-  --faint:   #8A959A;   /* citations, step indices, labels */
-  --line:    #E0E7E9;   /* hairlines, dividers, inactive accent edge */
+  --ground:       #EEF2EE;   /* page behind the application frame */
+  --surface:      #FFFFFF;   /* raised blocks, header, ask bar */
+  --surface-soft: #F8FAF8;   /* quiet application-frame canvas */
+  --sunk:         #EDF1EE;   /* bar tracks, inside a raised surface */
+  --ink:          #17201C;   /* body text, expressions */
+  --muted:        #5D6A63;   /* secondary text, evidence claims */
+  --faint:        #87938C;   /* citations, step indices, labels */
+  --line:         #DEE6E0;   /* hairlines, dividers, inactive accent edge */
+  --line-strong:  #CBD7CF;   /* frame and focused control borders */
 
   --done:    #2C7A5B;   /* mastered topics, correct answers */
   --done-bg: #E6F1EB;
@@ -61,15 +63,23 @@
      Tailwind v4 owns the --radius-* and --shadow-* namespaces, so a theme entry
      mapping --radius-block to var(--radius-block) would reference itself and
      silently resolve to nothing. Same trap the motion curves hit. */
-  --radius:       4px;   /* chip, play control — small controls */
-  --block-radius: 10px;  /* raised blocks */
+  --radius:       10px;  /* chips and small controls */
+  --block-radius: 18px;  /* raised blocks and the application frame */
 
   /* Two-layer shadow: a tight contact shadow to seat the block, a wider soft
      one to lift it. Tinted toward the ink rather than pure black, so it reads
      as shade rather than grime. */
   --block-shadow:
-    0 1px 2px rgba(18, 26, 28, 0.05),
-    0 4px 14px rgba(18, 26, 28, 0.06);
+    0 1px 2px rgba(18, 26, 28, 0.04),
+    0 12px 34px rgba(18, 26, 28, 0.07);
+  --shell-shadow:
+    0 2px 6px rgba(18, 26, 28, 0.04),
+    0 26px 80px rgba(18, 26, 28, 0.10);
+
+  /* Responsive reading and application widths. Components consume the
+     Tailwind aliases in globals.css rather than hard-coding these values. */
+  --app-width: 1180px;
+  --reading-width: 760px;
 
   /* The accent edge. 4px so it maps to Tailwind's stock border-l-4 rather than
      needing an arbitrary value. */
@@ -106,6 +116,8 @@
    * There is no --t-heading: block titles are body-sized at --w-semibold. At
    * 375px a separate heading size buys nothing and costs vertical space.
    * ---------------------------------------------------------------------- */
+  --t-display: clamp(1.8rem, 4vw, 3rem); /* current question */
+  --t-subtitle: clamp(1rem, 1.5vw, 1.2rem);
   --t-body:   var(--body);   /* profile-dependent */
   --t-title:  1em;           /* block titles — same size, heavier weight */
   --t-row:    0.84em;        /* roadmap rows, answer options */

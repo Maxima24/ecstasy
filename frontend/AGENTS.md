@@ -35,11 +35,10 @@ freedom on.
 - **Structural devices must encode information.** Numbered markers only where
   the content is genuinely a sequence: worked-solution steps are (02 depends on
   01), roadmap rows are not — they are ranked, so they carry mastery values.
-- **A block is a raised surface; nothing else is.** Blocks get `rounded-block`,
-  `shadow-block` and an accent edge. Rows, options, steps and controls inside a
-  block get none of those — separation inside a block is a hairline or space.
-  Depth marks the one boundary that matters, and stops meaning anything if it
-  marks every boundary.
+- **Depth has a hierarchy.** The desktop application frame gets `shadow-shell`;
+  generated blocks and floating overlays get `shadow-block`. Rows, options,
+  steps and controls inside a block get neither — separation inside a block is
+  a hairline or space. Depth stops meaning anything if it marks every boundary.
 - **Two radii, and they do not mix.** `rounded-block` for blocks,
   `rounded-token` for small controls (the profile chip, the play control).
 - **Motion answers actions.** One orchestrated moment: the profile flip, where
@@ -64,14 +63,18 @@ arbitrary values like `text-[15px]`:
 
 | Use | Utility |
 |---|---|
-| Colour | `bg-ground` `bg-surface` `text-ink` `text-muted` `text-faint` `border-line` `text-accent` `border-accent` `bg-accent-bg` `text-done` |
+| Colour | `bg-ground` `bg-surface` `bg-surface-soft` `text-ink` `text-muted` `text-faint` `border-line` `border-line-strong` `text-accent` `border-accent` `bg-accent-bg` `text-done` |
 | Spacing | `p-s1`..`p-s6` `gap-gap` (within a block) `gap-block` (between blocks) |
-| Type | `text-body` `text-title` `text-row` `text-expr` `text-quiet` `text-cite` `text-label` `text-chrome` |
+| Type | `text-display` `text-subtitle` `text-body` `text-title` `text-row` `text-expr` `text-quiet` `text-cite` `text-label` `text-chrome` |
 | Weight | `font-regular` `font-medium` `font-semibold` |
 | Line height | `leading-body` `leading-tight` |
 | Tracking | `tracking-profile` `tracking-label` |
 | Font | `font-sans` `font-mono` |
 | Motion | `ease-expressive-in` `ease-productive-out` `duration-flip-in` `duration-reorder` |
+
+Layout is mobile-first. Use the shared `max-w-app` and `max-w-reading` widths;
+the generated region becomes a twelve-column composition at the `lg`
+breakpoint. Breakpoints change available space, never profile behavior.
 
 `bg-accent` resolves differently under each `data-profile` because the theme
 mapping is `inline` — one class, value follows the container.

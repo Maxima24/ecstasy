@@ -3,7 +3,7 @@
 Single source of truth for the frontend build. Written to be executed by a
 coding agent as well as read by a person.
 
-- **Product:** Ecstacy — adaptive GRE/GMAT quantitative reasoning, mobile only
+- **Product:** Ecstacy — adaptive GRE/GMAT quantitative reasoning, responsive web
 - **Event:** Prometheus Fall Classic, submission **2026-09-26**
 - **PRD:** Frontend PRD v0.2, owner Faith Popoola
 - **Stack decision:** [ADR-0001](../docs/decisions/0001-frontend-stack-nextjs.md)
@@ -93,7 +93,7 @@ Not yet installed: `katex`, `framer-motion` (or a CSS-only equivalent — see §
 - IBM Plex Sans + IBM Plex Mono, one family differentiated by setting
 - KaTeX for math
 - Four durations, two curves (IBM Carbon motion) — §13
-- 375px only; no desktop, no dark mode
+- Mobile-first responsive layout; no dark mode
 
 ### Open — needs decision before or during Day 5
 
@@ -661,8 +661,11 @@ changes, it just does not travel.
 
 ## 14. Layout and responsiveness
 
-**375px only.** Desktop layout, dark mode, settings, landing page and offline
-mode are out of scope entirely. Do not add breakpoints, and do not add a
+**Mobile first, responsive through wide desktop.** The core experience remains
+one study screen rather than a landing page or dashboard. Phones use the full
+viewport, tablets gain breathing room, and desktop places generated blocks on
+a twelve-column composition inside a centred application frame. Dark mode,
+settings and offline mode remain out of scope; do not add a
 `prefers-color-scheme` block.
 
 There is one screen. Its contents change.
@@ -682,6 +685,15 @@ There is one screen. Its contents change.
 Header, progress indicator and ask input are hand-built and identical across
 every profile. Only the middle region is generated — this bounds how strange any
 single generation can look.
+
+The responsive rules are structural, not profile-specific:
+
+- below 1024px, blocks remain a single readable column;
+- at 1024px and above, instructional blocks occupy seven columns and supporting
+  roadmap, progress, audio and flashcard blocks occupy five;
+- a single block is centred at eight columns, and an unpaired final block spans
+  the row rather than leaving an accidental hole; and
+- the composer remains sticky and includes safe-area padding on small screens.
 
 The render container holds a `min-height` so the frame never collapses between a
 one-block `rusty` screen and a four-row `strong` drill. Without it the flip
