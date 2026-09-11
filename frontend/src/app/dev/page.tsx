@@ -18,7 +18,7 @@ import { PROFILES, parseBlocks, type Block, type Profile } from '@/lib/types';
  * Not linked from the app. It is a development surface, not a route a learner
  * reaches.
  */
-export const metadata = { title: 'Ecstacy — dev' };
+export const metadata = { title: 'Ecstacy: dev' };
 
 const QUESTION = 'If 3x + 5 = 20, what is x?';
 
@@ -157,7 +157,7 @@ export default function DevPage() {
             <Panel
               key={scenario.title}
               title={scenario.title}
-              note={`${scenario.note} — policy chose ${plan.state}: "${plan.reason}"`}
+              note={`${scenario.note} | policy chose ${plan.state}: "${plan.reason}"`}
               profile="strong"
               blocks={applyInvariants('strong', plan.blocks)}
             />

@@ -35,7 +35,7 @@ function FadedStep({ expr }: { expr: string | null }) {
       onClick={() => setRevealed(true)}
       className="numeric self-start rounded-token border border-dashed border-line-strong px-s3 py-s1 text-expr leading-tight text-muted transition-colors duration-feedback ease-productive-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
-      Your turn — tap to check
+      Your turn: tap to check
     </button>
   );
 }

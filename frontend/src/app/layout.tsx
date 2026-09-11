@@ -28,7 +28,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ecstacy — Adaptive Quant Prep",
+  title: "Ecstacy: Adaptive Quant Prep",
   description: "Adaptive GRE and GMAT quantitative reasoning practice.",
 };
 

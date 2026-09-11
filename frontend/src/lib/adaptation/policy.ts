@@ -77,8 +77,8 @@ function decisionFor(evidence: SessionEvidence): {
         state: 'prerequisite_reset',
         topic: prerequisite,
         reason:
-          `Back to ${prerequisite.label.toLowerCase()} first — ` +
-          `that is what ${focus.label.toLowerCase()} depends on.`,
+          `Back to ${prerequisite.label.toLowerCase()} first. ` +
+          `That is what ${focus.label.toLowerCase()} depends on.`,
       };
     }
   }
@@ -87,7 +87,7 @@ function decisionFor(evidence: SessionEvidence): {
     return {
       state: 'timed_drill',
       topic: focus,
-      reason: `Timed drill — two fast correct ${focus.label.toLowerCase()} answers.`,
+      reason: `Timed drill: two fast correct ${focus.label.toLowerCase()} answers.`,
     };
   }
 
@@ -96,7 +96,7 @@ function decisionFor(evidence: SessionEvidence): {
     return {
       state: 'worked_transfer',
       topic: focus,
-      reason: `More guidance — your last ${focus.label.toLowerCase()} answer was wrong.`,
+      reason: `More guidance: your last ${focus.label.toLowerCase()} answer was wrong.`,
     };
   }
 
@@ -108,7 +108,7 @@ function decisionFor(evidence: SessionEvidence): {
       state: 'guided_practice',
       topic: focus,
       reason:
-        `More guidance — your last ${focus.label.toLowerCase()} answer ` +
+        `More guidance: your last ${focus.label.toLowerCase()} answer ` +
         'was correct but slow.',
     };
   }
@@ -117,7 +117,7 @@ function decisionFor(evidence: SessionEvidence): {
     state: 'focused_practice',
     topic: focus,
     reason: latest?.correct
-      ? `Near-transfer question — your last ${focus.label.toLowerCase()} answer was correct.`
+      ? `Near-transfer question: your last ${focus.label.toLowerCase()} answer was correct.`
       : `Starting with a ${focus.label.toLowerCase()} check.`,
   };
 }
