@@ -1,0 +1,19 @@
+{
+  "type": "roadmap",
+  "steps": [
+    {
+      "topic_id": "arithmetic",
+      "label": "Arithmetic",
+      "mastery": 0.38,
+      "evidence_claim": "Not practised yet",
+      "status": "next"
+    },
+    {
+      "topic_id": "linear_equations",
+      "label": "Linear equations",
+      "mastery": 0.53,
+      "evidence_claim": "2 of last 2 correct · ready for a timed question",
+      "status": "later"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "spec_id": "fixture_rusty_guided_practice_26",
+  "cached": true,
+  "adaptation": {
+    "state": "guided_practice",
+    "topic_id": "linear_equations",
+    "reason": "More guidance — your last linear equations answer was correct but slow."
+  },
+  "blocks": [
+    {
+      "type": "explainer_card",
+      "title": "Isolating the variable",
+      "steps": [
+        {
+          "text": "Subtract 5 from both sides.",
+          "expr": "3x = 15"
+        },
+        {
+          "text": "Divide both sides by 3.",
+          "expr": "\\frac{3x}{3} = \\frac{15}{3}"
+        },
+        {
+          "text": "So x is 5.",
+          "expr": "x = 5",
+          "faded": true
+        }
+      ],
+      "citation": {
+        "chunk_id": "os_alg_2_3",
+        "label": "Linear Equations, 2.3"
+      }
+    },
+    {
+      "type": "quiz",
+      "timer_seconds": null,
+      "questions": [
+        {
+          "id": "linear_guided_01",
+          "stem": "Subtract 7 first. If 4x + 7 = 31, what is x?",
+          "stem_expr": null,
+          "options": [
+            "3",
+            "4",
+            "6",
+            "7",
+            "8"
+          ],
+          "topic_id": "linear_equations",
+          "answer_index": 2,
+          "rationale": "Subtracting 7 gives 4x = 24. Dividing by 4 gives x = 6."
+        }
+      ]
+    },
+    {
+      "type": "roadmap",
+      "steps": [
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet",
+          "status": "next"
+        },
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.42,
+          "evidence_claim": "1 of last 1 correct · slow but accurate",
+          "status": "later"
+        }
+      ]
+    },
+    {
+      "type": "progress_panel",
+      "weakest_topics": [
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet"
+        },
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.42,
+          "evidence_claim": "1 of last 1 correct · slow but accurate"
+        }
+      ],
+      "streak": 5,
+      "next_action_label": "Practise arithmetic next"
+    }
+  ]
+}

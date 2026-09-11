@@ -1,0 +1,70 @@
+{
+  "spec_id": "fixture_strong_focused_practice_26",
+  "cached": true,
+  "adaptation": {
+    "state": "focused_practice",
+    "topic_id": "linear_equations",
+    "reason": "Starting with a linear equations check."
+  },
+  "blocks": [
+    {
+      "type": "quiz",
+      "timer_seconds": 90,
+      "questions": [
+        {
+          "id": "linear_transfer_01",
+          "stem": "If 5x - 4 = 26, what is x?",
+          "stem_expr": null,
+          "options": [
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "topic_id": "linear_equations",
+          "answer_index": 2,
+          "rationale": "Adding 4 gives 5x = 30. Dividing by 5 gives x = 6."
+        }
+      ]
+    },
+    {
+      "type": "roadmap",
+      "steps": [
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.31,
+          "evidence_claim": "Not practised yet",
+          "status": "next"
+        },
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet",
+          "status": "later"
+        }
+      ]
+    },
+    {
+      "type": "progress_panel",
+      "weakest_topics": [
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.31,
+          "evidence_claim": "Not practised yet"
+        },
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet"
+        }
+      ],
+      "streak": 4,
+      "next_action_label": "Practise linear equations next"
+    }
+  ]
+}

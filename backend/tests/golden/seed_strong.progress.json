@@ -1,0 +1,19 @@
+{
+  "type": "progress_panel",
+  "weakest_topics": [
+    {
+      "topic_id": "linear_equations",
+      "label": "Linear equations",
+      "mastery": 0.31,
+      "evidence_claim": "Not practised yet"
+    },
+    {
+      "topic_id": "arithmetic",
+      "label": "Arithmetic",
+      "mastery": 0.38,
+      "evidence_claim": "Not practised yet"
+    }
+  ],
+  "streak": 4,
+  "next_action_label": "Practise linear equations next"
+}

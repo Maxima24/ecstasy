@@ -1,0 +1,92 @@
+{
+  "spec_id": "fixture_rusty_prerequisite_reset_26",
+  "cached": true,
+  "adaptation": {
+    "state": "prerequisite_reset",
+    "topic_id": "arithmetic",
+    "reason": "Back to arithmetic first — that is what linear equations depends on."
+  },
+  "blocks": [
+    {
+      "type": "explainer_card",
+      "title": "Undoing addition first",
+      "steps": [
+        {
+          "text": "Start with the total.",
+          "expr": "31"
+        },
+        {
+          "text": "Remove the amount that was added.",
+          "expr": "31 - 7 = 24"
+        },
+        {
+          "text": "Check by adding it back.",
+          "expr": "24 + 7 = 31"
+        }
+      ],
+      "citation": {
+        "chunk_id": "os_pre_alg_1_2",
+        "label": "Whole Number Operations, 1.2"
+      }
+    },
+    {
+      "type": "quiz",
+      "timer_seconds": null,
+      "questions": [
+        {
+          "id": "arithmetic_guided_01",
+          "stem": "Count back 7 from 31. What is 31 - 7?",
+          "stem_expr": null,
+          "options": [
+            "20",
+            "22",
+            "24",
+            "26",
+            "28"
+          ],
+          "topic_id": "arithmetic",
+          "answer_index": 2,
+          "rationale": "31 - 7 = 24. You can check because 24 + 7 = 31."
+        }
+      ]
+    },
+    {
+      "type": "roadmap",
+      "steps": [
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.21000000000000002,
+          "evidence_claim": "0 of last 2 correct · needs another linear equations problem",
+          "status": "next"
+        },
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet",
+          "status": "later"
+        }
+      ]
+    },
+    {
+      "type": "progress_panel",
+      "weakest_topics": [
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.21000000000000002,
+          "evidence_claim": "0 of last 2 correct · needs another linear equations problem"
+        },
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet"
+        }
+      ],
+      "streak": 0,
+      "next_action_label": "Practise linear equations next"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "progress_panel",
+  "weakest_topics": [
+    {
+      "topic_id": "arithmetic",
+      "label": "Arithmetic",
+      "mastery": 0.38,
+      "evidence_claim": "Not practised yet"
+    },
+    {
+      "topic_id": "linear_equations",
+      "label": "Linear equations",
+      "mastery": 0.42,
+      "evidence_claim": "1 of last 1 correct · slow but accurate"
+    }
+  ],
+  "streak": 5,
+  "next_action_label": "Practise arithmetic next"
+}

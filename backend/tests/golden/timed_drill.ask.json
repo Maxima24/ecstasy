@@ -1,0 +1,70 @@
+{
+  "spec_id": "fixture_strong_timed_drill_26",
+  "cached": true,
+  "adaptation": {
+    "state": "timed_drill",
+    "topic_id": "linear_equations",
+    "reason": "Timed drill — two fast correct linear equations answers."
+  },
+  "blocks": [
+    {
+      "type": "quiz",
+      "timer_seconds": 45,
+      "questions": [
+        {
+          "id": "linear_timed_01",
+          "stem": "If 7x + 2 = 44, what is x?",
+          "stem_expr": null,
+          "options": [
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "topic_id": "linear_equations",
+          "answer_index": 2,
+          "rationale": "Subtracting 2 gives 7x = 42. Dividing by 7 gives x = 6."
+        }
+      ]
+    },
+    {
+      "type": "roadmap",
+      "steps": [
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet",
+          "status": "next"
+        },
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.53,
+          "evidence_claim": "2 of last 2 correct · ready for a timed question",
+          "status": "later"
+        }
+      ]
+    },
+    {
+      "type": "progress_panel",
+      "weakest_topics": [
+        {
+          "topic_id": "arithmetic",
+          "label": "Arithmetic",
+          "mastery": 0.38,
+          "evidence_claim": "Not practised yet"
+        },
+        {
+          "topic_id": "linear_equations",
+          "label": "Linear equations",
+          "mastery": 0.53,
+          "evidence_claim": "2 of last 2 correct · ready for a timed question"
+        }
+      ],
+      "streak": 6,
+      "next_action_label": "Practise arithmetic next"
+    }
+  ]
+}
