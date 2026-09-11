@@ -51,7 +51,19 @@ const TOPIC_SEEDS: TopicSeed[] = [
     topic_id: 'arithmetic',
     label: 'Arithmetic',
     prerequisite_topic_id: null,
-    seedMastery: 0.62,
+    /*
+     * 0.38, not 0.62.
+     *
+     * This number decides whether the demo's centrepiece fires. PRD §18 step 6
+     * requires that answering ONE question reorders the roadmap and moves the
+     * next topic to the top. With CORRECT_DELTA at +0.11, a single correct
+     * answer lifts linear_equations from 0.31 to 0.42 — which crosses 0.38 and
+     * reorders, but would not have crossed 0.62.
+     *
+     * At 0.62 it took three correct answers, so the FLIP animation did nothing
+     * on the answer a judge actually gives. Keep the gap under the delta.
+     */
+    seedMastery: 0.38,
   },
 ];
 
