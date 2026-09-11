@@ -281,16 +281,10 @@
             "title": "Expr"
           },
           "faded": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
+            "default": false,
             "description": "Withhold this step's result and invite the learner to supply it. Backward fading: set on the LAST step only, and only when the learner has shown they can already do it.",
-            "title": "Faded"
+            "title": "Faded",
+            "type": "boolean"
           },
           "text": {
             "title": "Text",
@@ -460,7 +454,7 @@
                 "type": "null"
               }
             ],
-            "description": "Non-null for the `strong` profile only; null for every other.",
+            "description": "Always present. Non-null for the `strong` profile only; null for every other — the key is never omitted.",
             "title": "Timer Seconds"
           },
           "type": {
@@ -471,6 +465,7 @@
           }
         },
         "required": [
+          "timer_seconds",
           "questions"
         ],
         "title": "QuizBlock",
@@ -515,6 +510,7 @@
                 "type": "null"
               }
             ],
+            "description": "Always present; null when the stem carries no TeX.",
             "title": "Stem Expr"
           },
           "topic_id": {
@@ -525,6 +521,7 @@
         "required": [
           "id",
           "stem",
+          "stem_expr",
           "options",
           "topic_id",
           "answer_index",

@@ -56,8 +56,8 @@ class ExplainerStep(Strict):
         default=None,
         description="TeX, marked at ingestion. The frontend never derives this from prose.",
     )
-    faded: bool | None = Field(
-        default=None,
+    faded: bool = Field(
+        default=False,
         description=(
             "Withhold this step's result and invite the learner to supply it. "
             "Backward fading: set on the LAST step only, and only when the "
@@ -86,7 +86,7 @@ class AudioExplainerBlock(Strict):
 class QuizQuestion(Strict):
     id: str
     stem: str
-    stem_expr: str | None = None
+    stem_expr: str | None = Field(description="Always present; null when the stem carries no TeX.")
     options: list[str] = Field(min_length=5, max_length=5)
     topic_id: str
     answer_index: int = Field(ge=0, le=4)
@@ -96,8 +96,10 @@ class QuizQuestion(Strict):
 class QuizBlock(Strict):
     type: Literal["quiz"] = "quiz"
     timer_seconds: int | None = Field(
-        default=None,
-        description="Non-null for the `strong` profile only; null for every other.",
+        description=(
+            "Always present. Non-null for the `strong` profile only; null for "
+            "every other — the key is never omitted."
+        ),
     )
     questions: list[QuizQuestion] = Field(min_length=1)
 
