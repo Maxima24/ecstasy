@@ -18,3 +18,10 @@ reports/
 tmp/
 *.log
 
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.db
