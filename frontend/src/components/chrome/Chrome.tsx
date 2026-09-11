@@ -16,27 +16,32 @@ import { ProfilePill } from './ProfilePill';
 export function Header({ streak }: { streak: number }) {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-surface/95 backdrop-blur">
-      <div className="flex items-center justify-between gap-s3 px-s3 py-s3 sm:px-s5 lg:px-s6">
-        <div className="flex min-w-0 items-center gap-s3">
-          <span
-            className="grid size-s6 shrink-0 place-items-center rounded-token border border-accent bg-accent-bg font-mono text-chrome font-semibold text-accent"
-            aria-hidden="true"
-          >
-            E
-          </span>
-          <span className="flex min-w-0 flex-col leading-tight">
-            <span className="text-chrome font-semibold text-ink">Ecstacy</span>
-            <span className="hidden text-cite text-muted sm:block">Adaptive quantitative prep</span>
+      <div className="flex flex-col gap-s3 px-s3 py-s3 sm:px-s5 lg:px-s6">
+        <div className="flex items-center justify-between gap-s3">
+          <div className="flex min-w-0 items-center gap-s2">
+            <span
+              className="grid size-s6 shrink-0 place-items-center rounded-token border border-accent bg-accent-bg font-mono text-chrome font-semibold text-accent"
+              aria-hidden="true"
+            >
+              E
+            </span>
+            <span className="truncate text-chrome font-semibold text-ink">Ecstacy</span>
+          </div>
+
+          {/*
+            The streak is no longer hidden below `sm`. It was the product's only
+            persistent progress signal and it did not render at 375px — the one
+            viewport the PRD actually supports.
+          */}
+          <span className="flex shrink-0 items-center gap-s2 rounded-token border border-line bg-surface-soft px-s2 py-s1 text-chrome text-muted">
+            <span className="size-s1 rounded-full bg-done" aria-hidden="true" />
+            <span className="numeric">{streak}</span>
+            <span className="hidden sm:inline">day streak</span>
+            <span className="sr-only sm:hidden">day streak</span>
           </span>
         </div>
 
-        <div className="flex items-center gap-s2 sm:gap-s3">
-          <span className="hidden items-center gap-s2 rounded-token border border-line bg-surface-soft px-s2 py-s1 text-chrome text-muted sm:flex">
-            <span className="size-s1 rounded-full bg-done" aria-hidden="true" />
-            <span className="numeric">{streak} day streak</span>
-          </span>
-          <ProfilePill />
-        </div>
+        <ProfilePill />
       </div>
     </header>
   );
