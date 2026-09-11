@@ -40,7 +40,10 @@ function readMotion(): { duration: number; easing: string } {
   return { duration, easing };
 }
 
-export function Roadmap({ steps }: RoadmapBlock) {
+export function Roadmap({
+  steps,
+  citedTopicId,
+}: RoadmapBlock & { citedTopicId?: string }) {
   const rows = useRef(new Map<string, HTMLDivElement>());
   const previousTops = useRef(new Map<string, number>());
 
@@ -118,6 +121,17 @@ export function Roadmap({ steps }: RoadmapBlock) {
                 these rows — but it is never claimed to the learner.
               */}
               <span className="text-cite leading-tight text-muted">{step.evidence_claim}</span>
+              {/*
+                The row the current decision was based on.
+                Named explicitly rather than only highlighted: a colour change
+                alone asks the learner to infer the connection, and the whole
+                point is that they should not have to.
+              */}
+              {step.topic_id === citedTopicId ? (
+                <span className="font-mono text-label leading-tight text-accent">
+                  why this path
+                </span>
+              ) : null}
             </div>
           );
         })}

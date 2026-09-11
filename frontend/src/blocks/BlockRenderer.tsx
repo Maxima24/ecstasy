@@ -28,7 +28,11 @@ import { Roadmap } from './Roadmap';
  * without adding a case here is a compile error, which is a stronger guarantee
  * than the registry offered.
  */
-function renderBlock(block: Block, onQuizAnswered?: (answer: QuizAnswer) => void) {
+function renderBlock(
+  block: Block,
+  onQuizAnswered?: (answer: QuizAnswer) => void,
+  citedTopicId?: string,
+) {
   switch (block.type) {
     case 'explainer_card':
       return <ExplainerCard {...block} />;
@@ -37,7 +41,7 @@ function renderBlock(block: Block, onQuizAnswered?: (answer: QuizAnswer) => void
     case 'quiz':
       return <Quiz {...block} onAnswered={onQuizAnswered} />;
     case 'roadmap':
-      return <Roadmap {...block} />;
+      return <Roadmap {...block} citedTopicId={citedTopicId} />;
     case 'flashcards':
       return <Flashcards {...block} />;
     case 'progress_panel':
@@ -61,9 +65,19 @@ function renderBlock(block: Block, onQuizAnswered?: (answer: QuizAnswer) => void
 export function BlockRenderer({
   blocks,
   onQuizAnswered,
+  citedTopicId,
 }: {
   blocks: Block[];
   onQuizAnswered?: (answer: QuizAnswer) => void;
+  /**
+   * The topic the adaptation decision was about.
+   *
+   * Threaded so the roadmap can mark the row the reason refers to. Learners
+   * trust a recommendation more when they can see the information it was based
+   * on — and a reason naming a topic beside a list containing that topic is
+   * two facts, not one, until they are visibly joined.
+   */
+  citedTopicId?: string;
 }) {
   if (blocks.length === 0) {
     return (
@@ -87,7 +101,7 @@ export function BlockRenderer({
           style={{ '--block-index': i } as CSSProperties}
         >
           <BlockBoundary label={block.type} fallback={<FallbackCard />}>
-            {renderBlock(block, onQuizAnswered)}
+            {renderBlock(block, onQuizAnswered, citedTopicId)}
           </BlockBoundary>
         </div>
       ))}

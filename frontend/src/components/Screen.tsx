@@ -203,6 +203,7 @@ export function Screen({ initialQuestion = DEMO_QUESTION }: { initialQuestion?: 
                 key={`${question}::${profile}`}
                 blocks={blocks}
                 onQuizAnswered={handleAnswered}
+                citedTopicId={data?.adaptation?.topic_id}
               />
             </div>
           </div>
