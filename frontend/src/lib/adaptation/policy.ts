@@ -161,7 +161,11 @@ function instructionalCore(
     state === 'guided_practice' ||
     state === 'prerequisite_reset'
   ) {
-    return [explainerFor(topicId), quiz];
+    // Faded only for `guided_practice` — the learner answered correctly but
+    // slowly, so they can already do this and completing the example beats
+    // reading it. A learner who got it wrong, or is back on a prerequisite,
+    // still gets the whole thing.
+    return [explainerFor(topicId, state === 'guided_practice'), quiz];
   }
 
   return [quiz];

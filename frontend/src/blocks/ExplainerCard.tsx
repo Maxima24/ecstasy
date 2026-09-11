@@ -15,6 +15,31 @@ import { Expression } from './Expression';
  * when the profile's type setting changes without making the component aware
  * of which profile is active.
  */
+/**
+ * A withheld solution step.
+ *
+ * Shown instead of the result when the policy decided this learner can do the
+ * step themselves. Revealing is one tap — the point is to prompt retrieval
+ * first, not to lock the answer away.
+ */
+function FadedStep({ expr }: { expr: string | null }) {
+  const [revealed, setRevealed] = useState(false);
+
+  if (!expr) return null;
+
+  if (revealed) return <Expression tex={expr} />;
+
+  return (
+    <button
+      type="button"
+      onClick={() => setRevealed(true)}
+      className="numeric self-start rounded-token border border-dashed border-line-strong px-s3 py-s1 text-expr leading-tight text-muted transition-colors duration-feedback ease-productive-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+    >
+      Your turn — tap to check
+    </button>
+  );
+}
+
 function StepText({ text }: { text: string }) {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [expanded, setExpanded] = useState(false);
@@ -67,7 +92,17 @@ export function ExplainerCard({ title, steps, citation }: ExplainerCardBlock) {
             </span>
             <div className="flex min-w-0 flex-1 flex-col gap-s2">
               <StepText text={step.text} />
-              {step.expr ? <Expression tex={step.expr} /> : null}
+              {/*
+                A faded step withholds its result and asks the learner to
+                supply it — backward fading. It must read as an invitation,
+                not as a value that failed to load, so it is labelled rather
+                than blank.
+              */}
+              {step.faded ? (
+                <FadedStep expr={step.expr ?? null} />
+              ) : step.expr ? (
+                <Expression tex={step.expr} />
+              ) : null}
             </div>
           </div>
         ))}

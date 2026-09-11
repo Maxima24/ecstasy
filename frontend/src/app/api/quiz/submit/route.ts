@@ -26,7 +26,16 @@ export async function POST(request: Request): Promise<Response> {
     // a side effect. It stays a fixture: the handler decides nothing, it only
     // forwards the recorded result.
     return fixtureResponse(
-      quizSubmitFixture(body.selected_index, body.topic_id, body.user_id),
+      quizSubmitFixture(
+        body.selected_index,
+        body.topic_id,
+        body.user_id,
+        // Elapsed time is not telemetry here — the policy reads it to tell a
+        // confident answer from a laboured one, which is what separates a
+        // timed drill from guided practice. Dropping it silently made
+        // `guided_practice` unreachable.
+        typeof body.elapsed_ms === 'number' ? body.elapsed_ms : 0,
+      ),
     );
   }
 

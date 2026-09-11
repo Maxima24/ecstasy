@@ -29,6 +29,17 @@ export type Citation = {
 export type ExplainerStep = {
   text: string;
   expr?: string | null;
+  /**
+   * Withhold this step's result and ask the learner to supply it.
+   *
+   * Backward fading: as competence grows, solution steps are progressively
+   * omitted from the end rather than the example being shown whole every time.
+   * Faded examples measurably beat complete ones for algorithmic performance,
+   * and complete examples stop being attended to once a learner is past the
+   * early stage — so showing one to someone who is already succeeding is worse
+   * than showing nothing.
+   */
+  faded?: boolean;
 };
 
 export type ExplainerCard = {

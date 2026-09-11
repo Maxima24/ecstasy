@@ -127,8 +127,26 @@ function materialFor(topicId: string): TopicMaterial {
   return MATERIALS[topicId] ?? LINEAR_EQUATIONS;
 }
 
-export function explainerFor(topicId: string): ExplainerCard {
-  return { type: 'explainer_card', ...materialFor(topicId).explainer };
+/**
+ * A worked example, optionally faded.
+ *
+ * `fade` withholds the final step's result — backward fading. Reserved for a
+ * learner who answered correctly but slowly: they can do it, so completing the
+ * example is better practice than reading it.
+ */
+export function explainerFor(topicId: string, fade = false): ExplainerCard {
+  const explainer = materialFor(topicId).explainer;
+  if (!fade || explainer.steps.length < 2) {
+    return { type: 'explainer_card', ...explainer };
+  }
+
+  return {
+    type: 'explainer_card',
+    ...explainer,
+    steps: explainer.steps.map((step, i) =>
+      i === explainer.steps.length - 1 ? { ...step, faded: true } : step,
+    ),
+  };
 }
 
 export function audioFor(topicId: string): AudioExplainer {
