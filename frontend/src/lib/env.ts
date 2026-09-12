@@ -22,6 +22,26 @@ function positiveInt(raw: string | undefined, fallback: number): number {
   return Math.floor(parsed);
 }
 
+/**
+ * A duration where zero is meaningful.
+ *
+ * `FIXTURE_DELAY_MS=0` means "no artificial delay", which is exactly what you
+ * want when recording or when a real backend is answering. Rejecting it threw
+ * during module load, and because this module is imported by every route
+ * handler that turned a harmless setting into a 500 on every API route with no
+ * hint as to why.
+ */
+function nonNegativeInt(raw: string | undefined, fallback: number): number {
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    throw new Error(
+      `Expected zero or a positive number, received ${JSON.stringify(raw)}. Check your environment.`,
+    );
+  }
+  return Math.floor(parsed);
+}
+
 const backendUrl = process.env.BACKEND_URL?.trim() || null;
 
 export const serverEnv = {
@@ -52,7 +72,7 @@ export const serverEnv = {
    * against this. Skeletons only ever seen against a warm cache will be wrong
    * on the day the cache misses.
    */
-  fixtureDelayMs: positiveInt(process.env.FIXTURE_DELAY_MS, 600),
+  fixtureDelayMs: nonNegativeInt(process.env.FIXTURE_DELAY_MS, 600),
 } as const;
 
 /** True while no backend is configured and the proxy is serving fixtures. */
