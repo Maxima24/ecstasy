@@ -707,10 +707,81 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/admin/reset": {
+      "post": {
+        "description": "Restore a user to seed state.\n\nThe fixture reset on every process restart; a real database does not, so\nafter two rehearsals the demo account is dirty. There is no proxy route for\nthis in the frontend, so it is unreachable from the browser by construction.",
+        "operationId": "admin_reset_admin_reset_post",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "user_id",
+            "required": false,
+            "schema": {
+              "default": "demo",
+              "title": "User Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Admin Reset",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/ask": {
       "post": {
-        "description": "Compose the next screen from observed behaviour.\n\nMUST BE SIDE-EFFECT FREE. The frontend prefetches the other three profiles\nthe instant the first response lands, so this is called four times per\nquestion, concurrently. It must not persist the profile (four racing writes)\nand question selection must be deterministic for a given evidence state, or\nflipping profiles silently changes the question on screen.",
+        "description": "Compose the next screen from observed behaviour.\n\nSIDE-EFFECT FREE, and that is a correctness requirement rather than a\npreference. The frontend prefetches the other three profiles as soon as the\nfirst response lands, so this runs four times concurrently for one question.\n\nTwo consequences are honoured here:\n  * the profile is NOT persisted (that is POST /profile's job alone),\n    because four concurrent writes with four different values is\n    last-write-wins garbage;\n  * question selection is deterministic for a given evidence state, so all\n    four profiles show the same question and flipping between them does not\n    silently swap it.",
         "operationId": "ask_ask_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -786,8 +857,26 @@
     },
     "/profile": {
       "post": {
-        "description": "Persist the delivery preference.\n\n204 with a genuinely empty body. All three of status_code, response_class\nand response_model=None are required, or FastAPI documents a 200 JSON\nresponse and the contract lies about what this returns.",
+        "description": "Persist the delivery preference. The ONLY writer of `profile`.\n\n204 with a genuinely empty body: all three of status_code, response_class\nand response_model=None are required, or FastAPI documents a 200 JSON\nresponse and the contract lies about what this returns.",
         "operationId": "set_profile_profile_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -832,6 +921,22 @@
               "title": "User Id",
               "type": "string"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -864,8 +969,26 @@
     },
     "/quiz/submit": {
       "post": {
-        "description": "Record an answer. The only endpoint that moves mastery.",
+        "description": "Record an answer. The only endpoint that moves mastery.\n\nGrades by `question_id` against the database. The client already holds\n`answer_index` for instant feedback, but the server never trusts it — the\nstored question is the truth.",
         "operationId": "quiz_submit_quiz_submit_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -916,6 +1039,22 @@
               "default": "demo",
               "title": "User Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
             }
           }
         ],

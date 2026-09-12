@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+    "/admin/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Admin Reset
+         * @description Restore a user to seed state.
+         *
+         *     The fixture reset on every process restart; a real database does not, so
+         *     after two rehearsals the demo account is dirty. There is no proxy route for
+         *     this in the frontend, so it is unreachable from the browser by construction.
+         */
+        post: operations["admin_reset_admin_reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ask": {
         parameters: {
             query?: never;
@@ -17,11 +41,17 @@ export interface paths {
          * Ask
          * @description Compose the next screen from observed behaviour.
          *
-         *     MUST BE SIDE-EFFECT FREE. The frontend prefetches the other three profiles
-         *     the instant the first response lands, so this is called four times per
-         *     question, concurrently. It must not persist the profile (four racing writes)
-         *     and question selection must be deterministic for a given evidence state, or
-         *     flipping profiles silently changes the question on screen.
+         *     SIDE-EFFECT FREE, and that is a correctness requirement rather than a
+         *     preference. The frontend prefetches the other three profiles as soon as the
+         *     first response lands, so this runs four times concurrently for one question.
+         *
+         *     Two consequences are honoured here:
+         *       * the profile is NOT persisted (that is POST /profile's job alone),
+         *         because four concurrent writes with four different values is
+         *         last-write-wins garbage;
+         *       * question selection is deterministic for a given evidence state, so all
+         *         four profiles show the same question and flipping between them does not
+         *         silently swap it.
          */
         post: operations["ask_ask_post"];
         delete?: never;
@@ -58,9 +88,9 @@ export interface paths {
         put?: never;
         /**
          * Set Profile
-         * @description Persist the delivery preference.
+         * @description Persist the delivery preference. The ONLY writer of `profile`.
          *
-         *     204 with a genuinely empty body. All three of status_code, response_class
+         *     204 with a genuinely empty body: all three of status_code, response_class
          *     and response_model=None are required, or FastAPI documents a 200 JSON
          *     response and the contract lies about what this returns.
          */
@@ -100,6 +130,10 @@ export interface paths {
         /**
          * Quiz Submit
          * @description Record an answer. The only endpoint that moves mastery.
+         *
+         *     Grades by `question_id` against the database. The client already holds
+         *     `answer_index` for instant feedback, but the server never trusts it — the
+         *     stored question is the truth.
          */
         post: operations["quiz_submit_quiz_submit_post"];
         delete?: never;
@@ -422,10 +456,43 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    admin_reset_admin_reset_post: {
+        parameters: {
+            query?: {
+                user_id?: string;
+            };
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
     ask_ask_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -489,7 +556,9 @@ export interface operations {
     set_profile_profile_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -522,7 +591,9 @@ export interface operations {
             query?: {
                 user_id?: string;
             };
-            header?: never;
+            header?: {
+                authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -551,7 +622,9 @@ export interface operations {
     quiz_submit_quiz_submit_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -586,7 +659,9 @@ export interface operations {
             query?: {
                 user_id?: string;
             };
-            header?: never;
+            header?: {
+                authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
