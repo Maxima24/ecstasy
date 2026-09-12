@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes.learning import router as learning_router
@@ -80,6 +81,15 @@ def create_app() -> FastAPI:
             message=f"{location}: {first.get('msg', 'is invalid')}",
             retryable=False,
         )
+
+    # Audio must be playable the moment /ask responds: the frontend never calls
+    # a TTS service, it just points an <audio> element at whatever URL the
+    # block carries. Serving these directly keeps that promise with no extra
+    # infrastructure, and the <audio> element has no crossorigin attribute so
+    # the cross-origin fetch needs no CORS headers.
+    audio_dir = Path(__file__).resolve().parent / "data" / "audio"
+    if audio_dir.is_dir():
+        app.mount("/static/audio", StaticFiles(directory=audio_dir), name="audio")
 
     app.include_router(learning_router)
 

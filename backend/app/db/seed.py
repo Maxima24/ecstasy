@@ -116,11 +116,22 @@ def seed_content() -> None:
                 AudioExplainer(
                     topic_id=topic_id,
                     script=material["audio_script"],
-                    audio_path="/fixture-silence.wav",
-                    duration_ms=2_000,
+                    # Real generated speech, served by the StaticFiles mount in
+                    # main.py. The previous "/fixture-silence.wav" was a
+                    # frontend-only placeholder and 404ed against this service,
+                    # which meant the `hands_free` profile's LEAD block was
+                    # broken.
+                    audio_path=material.get("audio_path", f"/static/audio/{topic_id}.wav"),
+                    # Measured from the file rather than assumed. The fixture
+                    # hardcoded 2000ms, which was harmless for silence but would
+                    # desync a transcript against twelve seconds of speech.
+                    duration_ms=material.get("audio_duration_ms", 0),
                 )
             )
 
+            # The primary item per kind keeps ord=0, so a learner who has not
+            # answered yet always sees the hand-written one and a rehearsed demo
+            # opens identically every run.
             for kind, q in material["questions"].items():
                 db.merge(
                     Question(
@@ -137,6 +148,26 @@ def seed_content() -> None:
                         ord=0,
                     )
                 )
+
+            # Additional items so rotation has something to rotate on topics the
+            # ingested bank does not cover.
+            for kind, items in (material.get("extra_questions") or {}).items():
+                for i, q in enumerate(items, start=1):
+                    db.merge(
+                        Question(
+                            id=q["id"],
+                            topic_id=topic_id,
+                            kind=kind,
+                            stem=q["stem"],
+                            stem_expr=q.get("stem_expr"),
+                            options=q["options"],
+                            answer_index=q["answer_index"],
+                            rationale=q["rationale"],
+                            source=q.get("source", "curated"),
+                            source_ref=q.get("source_ref"),
+                            ord=i,
+                        )
+                    )
 
             existing = {
                 f

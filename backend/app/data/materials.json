@@ -75,7 +75,9 @@
         "front": "What undoes multiplication in an equation?",
         "back": "Divide both sides by the same non-zero number."
       }
-    ]
+    ],
+    "audio_duration_ms": 12088,
+    "audio_path": "/static/audio/linear_equations.wav"
   },
   "arithmetic": {
     "explainer": {
@@ -153,6 +155,106 @@
         "front": "24 + 7",
         "back": "31"
       }
-    ]
+    ],
+    "audio_duration_ms": 11393,
+    "audio_path": "/static/audio/arithmetic.wav",
+    "extra_questions": {
+      "guided": [
+        {
+          "id": "arithmetic_guided_02",
+          "stem": "Count back 9 from 45. What is 45 - 9?",
+          "stem_expr": null,
+          "options": [
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ],
+          "answer_index": 2,
+          "rationale": "45 - 9 = 36. Check: 36 + 9 = 45.",
+          "source": "curated"
+        },
+        {
+          "id": "arithmetic_guided_03",
+          "stem": "Take 8 away from 52. What is 52 - 8?",
+          "stem_expr": null,
+          "options": [
+            "40",
+            "42",
+            "44",
+            "46",
+            "48"
+          ],
+          "answer_index": 2,
+          "rationale": "52 - 8 = 44. Check: 44 + 8 = 52.",
+          "source": "curated"
+        }
+      ],
+      "transfer": [
+        {
+          "id": "arithmetic_transfer_02",
+          "stem": "What is 63 - 27?",
+          "stem_expr": null,
+          "options": [
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ],
+          "answer_index": 2,
+          "rationale": "63 - 27 = 36.",
+          "source": "curated"
+        },
+        {
+          "id": "arithmetic_transfer_03",
+          "stem": "What is 71 - 35?",
+          "stem_expr": null,
+          "options": [
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ],
+          "answer_index": 2,
+          "rationale": "71 - 35 = 36.",
+          "source": "curated"
+        }
+      ],
+      "timed": [
+        {
+          "id": "arithmetic_timed_02",
+          "stem": "What is 28 + 8?",
+          "stem_expr": null,
+          "options": [
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ],
+          "answer_index": 2,
+          "rationale": "28 + 8 = 36.",
+          "source": "curated"
+        },
+        {
+          "id": "arithmetic_timed_03",
+          "stem": "What is 19 + 17?",
+          "stem_expr": null,
+          "options": [
+            "32",
+            "34",
+            "36",
+            "38",
+            "40"
+          ],
+          "answer_index": 2,
+          "rationale": "19 + 17 = 36.",
+          "source": "curated"
+        }
+      ]
+    }
   }
 }

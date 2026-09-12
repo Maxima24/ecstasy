@@ -189,3 +189,110 @@ def test_no_dashes_in_seeded_copy(db, dash):
 
     for a in db.execute(select(AudioExplainer)).scalars():
         assert dash not in a.script, a.topic_id
+
+
+# --- audio ------------------------------------------------------------------
+
+
+def test_every_audio_file_exists_on_disk(db):
+    """The contract says audio_url must be playable when /ask responds.
+
+    The frontend never calls a TTS service; it points an <audio> element at
+    whatever URL the block carries. A path with no file behind it is a broken
+    lead block for the `hands_free` profile, which is exactly what shipped
+    before: "/fixture-silence.wav" was a frontend-only placeholder and 404ed
+    against this service.
+    """
+    from pathlib import Path
+
+    from sqlalchemy import select
+
+    from app.db.models import AudioExplainer
+
+    root = Path(__file__).resolve().parents[1] / "app" / "data"
+    for row in db.execute(select(AudioExplainer)).scalars():
+        assert row.audio_path.startswith("/static/audio/"), row.topic_id
+        on_disk = root / "audio" / Path(row.audio_path).name
+        assert on_disk.is_file(), f"{row.topic_id}: {on_disk} missing"
+        assert on_disk.stat().st_size > 1024, f"{row.topic_id}: suspiciously small"
+
+
+def test_audio_duration_is_real_not_assumed(db):
+    """Measured from the file, not hardcoded.
+
+    The fixture used a flat 2000ms, which was harmless for silence but would
+    desync a transcript against twelve seconds of speech.
+    """
+    import wave
+    from pathlib import Path
+
+    from sqlalchemy import select
+
+    from app.db.models import AudioExplainer
+
+    root = Path(__file__).resolve().parents[1] / "app" / "data"
+    for row in db.execute(select(AudioExplainer)).scalars():
+        path = root / "audio" / Path(row.audio_path).name
+        with wave.open(str(path)) as w:
+            actual = int(round(w.getnframes() / w.getframerate() * 1000))
+        assert abs(row.duration_ms - actual) <= 50, row.topic_id
+
+
+# --- rotation coverage ------------------------------------------------------
+
+
+def test_every_topic_and_kind_has_more_than_one_question(db):
+    """Rotation needs something to rotate.
+
+    With exactly one question per (topic, kind), answering handed the learner
+    the same item straight back, which reads as the app ignoring them.
+    """
+    from sqlalchemy import func, select
+
+    from app.db.models import Question
+
+    for topic in topics(db):
+        for kind in sorted(KINDS):
+            count = db.execute(
+                select(func.count())
+                .select_from(Question)
+                .where(Question.topic_id == topic.id, Question.kind == kind)
+            ).scalar()
+            assert count >= 2, f"{topic.id}/{kind} has {count}"
+
+
+def test_exactly_one_primary_question_per_topic_and_kind(db):
+    """ord=0 is the hand-written item a fresh learner always sees.
+
+    Two items at ord=0 would make the opening screen depend on tie-breaking,
+    and a rehearsed demo would open differently between takes.
+    """
+    from sqlalchemy import func, select
+
+    from app.db.models import Question
+
+    for topic in topics(db):
+        for kind in sorted(KINDS):
+            primaries = db.execute(
+                select(func.count())
+                .select_from(Question)
+                .where(
+                    Question.topic_id == topic.id,
+                    Question.kind == kind,
+                    Question.ord == 0,
+                )
+            ).scalar()
+            assert primaries == 1, f"{topic.id}/{kind} has {primaries} at ord=0"
+
+
+def test_ingested_questions_carry_provenance(db):
+    """"Derived from AQuA-RAT" has to be checkable, not just claimed."""
+    from sqlalchemy import select
+
+    from app.db.models import Question
+
+    for q in db.execute(select(Question).where(Question.source == "aqua-rat")).scalars():
+        assert q.source_ref, q.id
+        assert ":" in q.source_ref, q.id
+        # The dataset has no TeX, so a guessed conversion would be invented.
+        assert q.stem_expr is None, q.id
