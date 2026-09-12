@@ -291,3 +291,57 @@ def test_unicode_is_emitted_raw_not_escaped(client):
 
     raw = client.get("/roadmap?user_id=demo").content
     assert "·".encode("utf-8") in raw
+
+
+# --- concurrency ------------------------------------------------------------
+
+
+def test_concurrent_ask_on_a_fresh_user(client):
+    """The frontend's prefetch, reproduced.
+
+    On first load it fires /ask for all four profiles at once against a user
+    that does not exist yet. The user row commits before its mastery rows do, so
+    a request arriving in that window used to see the user, skip seeding, build
+    a roadmap from an empty mastery map, and 500 on the contract's minimum of
+    one step. One of four requests failed, reliably.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
+    user_id = "fresh_concurrent_user"
+    profiles = ["rusty", "time_poor", "hands_free", "strong"]
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        responses = list(
+            pool.map(
+                lambda p: client.post(
+                    "/ask", json={"user_id": user_id, "profile": p, "question": QUESTION}
+                ),
+                profiles,
+            )
+        )
+
+    for profile, r in zip(profiles, responses, strict=True):
+        assert r.status_code == 200, f"{profile}: {r.status_code} {r.text[:200]}"
+        assert len(r.json()["blocks"]) >= 1
+
+    # And exactly one set of mastery rows, not four.
+    roadmap = client.get(f"/roadmap?user_id={user_id}").json()
+    assert len(roadmap["steps"]) == 2
+    assert {s["topic_id"] for s in roadmap["steps"]} == {"linear_equations", "arithmetic"}
+
+
+def test_roadmap_survives_missing_mastery_rows(client):
+    """A missing row degrades to "as if unpractised", never to zero steps."""
+    from app.db.base import SessionLocal
+    from app.db.models import Mastery
+
+    client.get("/roadmap?user_id=gappy")
+    with SessionLocal() as db:
+        db.query(Mastery).filter(Mastery.user_id == "gappy").delete()
+        db.commit()
+
+    r = client.get("/roadmap?user_id=gappy")
+    assert r.status_code == 200
+    steps = r.json()["steps"]
+    assert len(steps) == 2
+    assert sum(1 for s in steps if s["status"] == "next") == 1

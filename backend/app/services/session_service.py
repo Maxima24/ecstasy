@@ -30,9 +30,21 @@ def _topics(db: Session) -> dict[str, Topic]:
 
 
 def _mastery(db: Session, user_id: str) -> dict[str, float]:
-    return {
+    """Mastery per topic, falling back to the topic's seed value.
+
+    The fallback is not cosmetic. A roadmap built from an empty mastery map has
+    zero steps, which the contract forbids and Pydantic rejects, turning a
+    missing row into a 500. Defaulting to the seed means every topic always has
+    a position, so a missing row degrades to "as if unpractised" rather than to
+    a broken screen.
+    """
+    stored = {
         m.topic_id: m.value
         for m in db.execute(select(Mastery).where(Mastery.user_id == user_id)).scalars()
+    }
+    return {
+        topic.id: stored.get(topic.id, topic.seed_mastery)
+        for topic in db.execute(select(Topic)).scalars()
     }
 
 

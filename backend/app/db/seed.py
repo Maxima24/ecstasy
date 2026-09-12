@@ -178,18 +178,41 @@ def ensure_user(db: Session, user_id: str) -> User:
         existing = db.get(User, user_id)
         if existing is None:
             raise
-        return existing
+        user = existing
 
+    # Unconditionally, not only on the branch that created the user.
+    #
+    # The user row commits before its mastery rows exist, so a concurrent
+    # request could see the user, skip straight past this, and build a roadmap
+    # from an empty mastery map. Pydantic then rejected the block for having
+    # zero steps and the request 500ed. With four concurrent /ask calls on a
+    # fresh user - which is exactly what the frontend's prefetch does on first
+    # load - that was reliably reproducible.
     seed_mastery_for(db, user_id)
     return user
 
 
 def seed_mastery_for(db: Session, user_id: str) -> None:
-    """Give a new user the seeded starting point for every topic."""
-    for topic in db.execute(select(Topic)).scalars():
-        if db.get(Mastery, (user_id, topic.id)) is None:
-            db.add(Mastery(user_id=user_id, topic_id=topic.id, value=topic.seed_mastery))
-    db.commit()
+    """Give a user the seeded starting point for every topic.
+
+    Idempotent and safe to lose the race: a concurrent caller inserting the same
+    row first is a success, not an error, so the IntegrityError is swallowed and
+    the existing row stands.
+    """
+    missing = [
+        topic
+        for topic in db.execute(select(Topic)).scalars()
+        if db.get(Mastery, (user_id, topic.id)) is None
+    ]
+    if not missing:
+        return
+
+    for topic in missing:
+        db.add(Mastery(user_id=user_id, topic_id=topic.id, value=topic.seed_mastery))
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
 
 
 def reset_user(db: Session, user_id: str) -> None:
