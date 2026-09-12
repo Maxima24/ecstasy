@@ -1,0 +1,272 @@
+[
+  {
+    "stem": "11 times a number gives 132. The number is",
+    "stem_expr": null,
+    "options": [
+      "11",
+      "12",
+      "13.2",
+      "None",
+      "Cannot be determined"
+    ],
+    "answer_index": 1,
+    "rationale": "Explanation: Let the number be 'N' 11×N=132⇒N=12 Correct Option: B",
+    "source": "aqua-rat",
+    "source_ref": "train:70621",
+    "topic_id": "linear_equations",
+    "kind": "timed",
+    "id": "aqua_linear_equations_00"
+  },
+  {
+    "stem": "12 times a number gives 156. The number is",
+    "stem_expr": null,
+    "options": [
+      "11",
+      "12",
+      "13",
+      "None",
+      "Cannot be determined"
+    ],
+    "answer_index": 2,
+    "rationale": "Explanation: Let the number be 'N' 12×N=156⇒N=13 Correct Option: C",
+    "source": "aqua-rat",
+    "source_ref": "train:31492",
+    "topic_id": "linear_equations",
+    "kind": "timed",
+    "id": "aqua_linear_equations_01"
+  },
+  {
+    "stem": "14 times a number gives 210. The number is",
+    "stem_expr": null,
+    "options": [
+      "11",
+      "12",
+      "15",
+      "None",
+      "Cannot be determined"
+    ],
+    "answer_index": 2,
+    "rationale": "Explanation: Let the number be 'N' 14×N=210⇒N=15 Correct Option: C",
+    "source": "aqua-rat",
+    "source_ref": "train:90198",
+    "topic_id": "linear_equations",
+    "kind": "timed",
+    "id": "aqua_linear_equations_02"
+  },
+  {
+    "stem": "17 times a number gives 187. The number is",
+    "stem_expr": null,
+    "options": [
+      "11",
+      "12",
+      "13.2",
+      "None",
+      "Cannot be determined"
+    ],
+    "answer_index": 0,
+    "rationale": "Explanation: Let the number be 'N' 17×N=187⇒N=11 Correct Option: A",
+    "source": "aqua-rat",
+    "source_ref": "train:50940",
+    "topic_id": "linear_equations",
+    "kind": "timed",
+    "id": "aqua_linear_equations_03"
+  },
+  {
+    "stem": "19 times a number gives 342. The number is",
+    "stem_expr": null,
+    "options": [
+      "18",
+      "19",
+      "16",
+      "None",
+      "Cannot be determined"
+    ],
+    "answer_index": 0,
+    "rationale": "Explanation: Let the number be 'N' 19×N=342⇒N=18 Correct Option: A",
+    "source": "aqua-rat",
+    "source_ref": "train:18249",
+    "topic_id": "linear_equations",
+    "kind": "timed",
+    "id": "aqua_linear_equations_04"
+  },
+  {
+    "stem": "Half a number plus 5 is 11. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "answer_index": 4,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 5 = 11 (1/2)x + 5 - 5 = 11 - 5 (1/2)x = 6 2 × (1/2)x = 6 × 2 x = 12 correct answer is E)12",
+    "source": "aqua-rat",
+    "source_ref": "train:38497",
+    "topic_id": "linear_equations",
+    "kind": "transfer",
+    "id": "aqua_linear_equations_05"
+  },
+  {
+    "stem": "Half a number plus 5 is 13. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "16",
+      "10",
+      "11",
+      "12"
+    ],
+    "answer_index": 1,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 5 = 13 (1/2)x = 13 - 5 (1/2)x = 8 x = 16 correct answer is B",
+    "source": "aqua-rat",
+    "source_ref": "train:3730",
+    "topic_id": "linear_equations",
+    "kind": "transfer",
+    "id": "aqua_linear_equations_06"
+  },
+  {
+    "stem": "Half a number plus 5 is 15. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "20",
+      "10",
+      "11",
+      "12"
+    ],
+    "answer_index": 1,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 5 = 15 (1/2)x = 15 - 5 (1/2)x = 10 x = 20 correct answer is B",
+    "source": "aqua-rat",
+    "source_ref": "train:81125",
+    "topic_id": "linear_equations",
+    "kind": "transfer",
+    "id": "aqua_linear_equations_07"
+  },
+  {
+    "stem": "Half a number plus 6 is 11. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "answer_index": 2,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 6 = 11 (1/2)x = 11 - 6 (1/2)x = 5 x = 10 correct answer is C",
+    "source": "aqua-rat",
+    "source_ref": "train:16100",
+    "topic_id": "linear_equations",
+    "kind": "transfer",
+    "id": "aqua_linear_equations_08"
+  },
+  {
+    "stem": "Half a number plus 7 is 11. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "answer_index": 0,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 7 = 11 (1/2)x = 11 - 7 (1/2)x = 4 x = 8 correct answer is A",
+    "source": "aqua-rat",
+    "source_ref": "train:91854",
+    "topic_id": "linear_equations",
+    "kind": "transfer",
+    "id": "aqua_linear_equations_09"
+  },
+  {
+    "stem": "Subtract the added amount first, then double. Half a number plus 7 is 17. What is the number?",
+    "stem_expr": null,
+    "options": [
+      "8",
+      "9",
+      "10",
+      "11",
+      "20"
+    ],
+    "answer_index": 4,
+    "rationale": "Let x be the number. Always replace \"is\" with an equal sign (1/2)x + 7 = 17 (1/2)x = 17 - 7 (1/2)x = 20 x = 20 correct answer is E",
+    "source": "aqua-rat",
+    "source_ref": "train:1011",
+    "topic_id": "linear_equations",
+    "kind": "guided",
+    "id": "aqua_linear_equations_10"
+  },
+  {
+    "stem": "Collect the unknown on one side first. Find the number which multiplied by 15 is increased by 196.",
+    "stem_expr": null,
+    "options": [
+      "14",
+      "20",
+      "26",
+      "28",
+      "27"
+    ],
+    "answer_index": 0,
+    "rationale": "Let the number be x. Then, 15x - x = 196 x = 14 ANSWER:A",
+    "source": "aqua-rat",
+    "source_ref": "train:97165",
+    "topic_id": "linear_equations",
+    "kind": "guided",
+    "id": "aqua_linear_equations_11"
+  },
+  {
+    "stem": "Undo the subtraction first. If 1/5th of a number decreased by 5 is 5, then the number is",
+    "stem_expr": null,
+    "options": [
+      "25",
+      "50",
+      "60",
+      "75",
+      "None"
+    ],
+    "answer_index": 1,
+    "rationale": "Explanation : Let the number be a, then a/5−5=5⇒a/5=10⇒a=50 Correct Option: B",
+    "source": "aqua-rat",
+    "source_ref": "train:9385",
+    "topic_id": "linear_equations",
+    "kind": "guided",
+    "id": "aqua_linear_equations_12"
+  },
+  {
+    "stem": "Collect the unknown on one side first. Find the number which when multiplied by 15 is increased by 196",
+    "stem_expr": null,
+    "options": [
+      "10",
+      "12",
+      "14",
+      "16",
+      "18"
+    ],
+    "answer_index": 2,
+    "rationale": "Explanation: Let the number be x. Then, 15x = x + 196 =› 14 x= 196 =› x = 14. Option C",
+    "source": "aqua-rat",
+    "source_ref": "train:54751",
+    "topic_id": "linear_equations",
+    "kind": "guided",
+    "id": "aqua_linear_equations_13"
+  },
+  {
+    "stem": "Collect the unknown on one side first. What is the number which when multiplied by 13 is increased by 180?",
+    "stem_expr": null,
+    "options": [
+      "13",
+      "15",
+      "23",
+      "35",
+      "45"
+    ],
+    "answer_index": 1,
+    "rationale": "13 × 15 = 195 Answer: B",
+    "source": "aqua-rat",
+    "source_ref": "train:14557",
+    "topic_id": "linear_equations",
+    "kind": "guided",
+    "id": "aqua_linear_equations_14"
+  }
+]

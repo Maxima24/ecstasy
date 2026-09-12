@@ -41,6 +41,17 @@ def submit(client, question_id, selected_index, elapsed_ms=5_000, user_id="demo"
     )
 
 
+def wrong_index(question: dict) -> int:
+    """An index that is definitely not the answer.
+
+    Hardcoding 0 worked only while every seeded question happened to have a
+    non-zero answer_index. With a varied question bank that assumption silently
+    became "answer correctly", and two tests started asserting a state the
+    learner had not earned.
+    """
+    return (question["answer_index"] + 1) % 5
+
+
 # --- health -----------------------------------------------------------------
 
 
@@ -144,16 +155,15 @@ def test_every_roadmap_step_carries_a_claim(client):
 
 
 def test_wrong_answer_leads_to_worked_transfer(client):
-    qid = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")["questions"][0]["id"]
-    submit(client, qid, selected_index=0, elapsed_ms=12_000)
+    q = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")["questions"][0]
+    submit(client, q["id"], selected_index=wrong_index(q), elapsed_ms=12_000)
     assert ask(client).json()["adaptation"]["state"] == "worked_transfer"
 
 
 def test_two_misses_reset_to_the_prerequisite(client):
-    qid = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")["questions"][0]["id"]
-    submit(client, qid, 0, 12_000)
-    qid = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")["questions"][0]["id"]
-    submit(client, qid, 0, 12_000)
+    for _ in range(2):
+        q = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")["questions"][0]
+        submit(client, q["id"], wrong_index(q), 12_000)
 
     body = ask(client).json()
     assert body["adaptation"]["state"] == "prerequisite_reset"
@@ -345,3 +355,33 @@ def test_roadmap_survives_missing_mastery_rows(client):
     steps = r.json()["steps"]
     assert len(steps) == 2
     assert sum(1 for s in steps if s["status"] == "next") == 1
+
+
+def test_first_question_is_always_the_curated_one(client):
+    """A rehearsed demo must open on the same screen every run.
+
+    Rotation is keyed on the learner's answer count, so at zero it would
+    otherwise hash to an arbitrary item and the opening question would change
+    between takes. The curated item has the lowest `ord`.
+    """
+    ids = set()
+    for i in range(3):
+        body = ask(client, user_id=f"opener_{i}").json()
+        quiz = next(b for b in body["blocks"] if b["type"] == "quiz")
+        ids.add(quiz["questions"][0]["id"])
+
+    assert len(ids) == 1, ids
+    assert not ids.pop().startswith("aqua_"), "a fresh learner should get the curated item"
+
+
+def test_rotation_serves_a_different_question_after_answering(client):
+    """With one question per (topic, kind) this was a no-op: answering handed
+    the learner the same item straight back."""
+    seen = []
+    for _ in range(4):
+        quiz = next(b for b in ask(client).json()["blocks"] if b["type"] == "quiz")
+        q = quiz["questions"][0]
+        seen.append(q["id"])
+        submit(client, q["id"], q["answer_index"], elapsed_ms=4_000)
+
+    assert len(set(seen)) > 1, f"no rotation: {seen}"

@@ -72,7 +72,13 @@ def question_for(
     if not rows:
         raise LookupError(f"no questions seeded for topic {topic_id!r}")
 
-    row = rows[_stable_index(topic_id, kind, rotation, modulo=len(rows))]
+    # A learner who has not answered yet always gets the lowest-`ord` item,
+    # which is the hand-written curated one. That keeps the opening screen of a
+    # rehearsed demo identical every run; rotation only starts once the learner
+    # has actually done something, which is also when a fresh question is the
+    # point.
+    index = 0 if rotation == 0 else _stable_index(topic_id, kind, rotation, modulo=len(rows))
+    row = rows[index]
     return QuizQuestion(
         id=row.id,
         stem=row.stem,

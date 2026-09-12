@@ -154,7 +154,46 @@ def seed_content() -> None:
                             ord=i,
                         )
                     )
+
+        seed_aqua_questions(db)
         db.commit()
+
+
+def seed_aqua_questions(db: Session) -> None:
+    """Load the verified AQuA-RAT derived questions, if present.
+
+    Optional by design: the file is produced by scripts/curate_aqua.py plus
+    scripts/verify_aqua.py, and the service must still seed and run without it.
+
+    These give question rotation something to rotate. With only the curated
+    items there was exactly one question per (topic, kind), so answering handed
+    the learner the same item straight back.
+
+    `ord` starts at 1 so the hand-written curated item stays first and the
+    rehearsed demo screen does not change.
+    """
+    path = DATA / "aqua_questions.json"
+    if not path.exists():
+        return
+
+    for i, q in enumerate(json.loads(path.read_text(encoding="utf-8")), start=1):
+        if db.get(Topic, q["topic_id"]) is None:
+            continue
+        db.merge(
+            Question(
+                id=q["id"],
+                topic_id=q["topic_id"],
+                kind=q["kind"],
+                stem=q["stem"],
+                stem_expr=None,  # AQuA-RAT carries no TeX; never guess it
+                options=q["options"],
+                answer_index=q["answer_index"],
+                rationale=q["rationale"],
+                source=q.get("source", "aqua-rat"),
+                source_ref=q.get("source_ref"),
+                ord=i,
+            )
+        )
 
 
 def ensure_user(db: Session, user_id: str) -> User:

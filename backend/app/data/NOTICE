@@ -1,0 +1,32 @@
+Question content under `source: "aqua-rat"` is derived from AQuA-RAT.
+
+  AQuA-RAT (Algebra Question Answering with Rationales)
+  https://github.com/google-deepmind/AQuA
+  Copyright DeepMind Technologies Limited
+  Licensed under the Apache License, Version 2.0
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Derived rather than copied verbatim. Each item was:
+
+  * normalised  - option prefixes ("A)21") stripped, the correct letter mapped
+                  to an index, whitespace collapsed, missing spaces after
+                  sentence punctuation repaired
+  * filtered    - five distinct options required, stems over 180 characters
+                  dropped, anything referring to a figure or table dropped
+  * classified  - the dataset carries no topic labels, so bucketing to our
+                  topics is our own work, by keyword with an exclusion veto
+  * VERIFIED    - every promoted item is checked arithmetically by
+                  scripts/verify_aqua.py. The dataset's answers are
+                  crowd-written and some are wrong: "15 times a number gives
+                  150" was labelled 15, when 15 x 15 = 225 and the correct
+                  value was not among the options at all. An item whose
+                  template the verifier does not recognise is rejected rather
+                  than trusted.
+  * annotated   - `guided` items carry a hand-written hint sentence naming the
+                  first move. That sentence is ours, not the dataset's.
+
+Rationales are used as shipped. They are NOT used to build worked examples:
+those are hand-written, because a broken worked example is the most visible
+possible failure in a product that claims to teach.
+
+Provenance for every item is recorded in `source_ref` as "<split>:<line>".

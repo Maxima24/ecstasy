@@ -29,3 +29,6 @@ __pycache__/
 # local database
 backend/ecstacy.db
 backend/ecstacy.db-*
+
+# Raw AQuA-RAT downloads (47MB). Regenerate with scripts/curate_aqua.py.
+backend/.aqua/
