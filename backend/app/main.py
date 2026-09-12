@@ -13,7 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api.routes.stubs import router as learning_router
+from app.api.routes.learning import router as learning_router
+from app.db.seed import init_db
 from app.config import settings
 from app.schemas.errors import ApiError
 
@@ -33,6 +34,10 @@ def _error(status: int, code: str, message: str, retryable: bool) -> JSONRespons
 
 
 def create_app() -> FastAPI:
+    # Tables and seeded content are ready before the first request. Idempotent,
+    # so restarting with edited JSON is enough to reseed.
+    init_db()
+
     app = FastAPI(
         title="Ecstacy",
         version=CONTRACT_VERSION,
